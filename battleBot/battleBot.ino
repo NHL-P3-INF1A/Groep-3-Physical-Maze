@@ -56,7 +56,6 @@ void setup() {
   Serial.begin(9600);
   calibrate();
   driveForward(255);
-  addPulses(10000, true, true);
   //
   //Color setup
   strip.begin();
@@ -68,10 +67,5 @@ void setup() {
 }
 
 void loop() {
-  blink(LF);
-  gripperOpen();
-  delay(2000);
-  blink(RF);
-  gripperClose();
-  delay(2000);
+   addPulses(1000, true, true);
 }

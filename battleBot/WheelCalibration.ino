@@ -7,10 +7,10 @@ double rightBackwardOffset = 1;
 void calibrate()
 {
     driveLeft(255);
-    addPulses(4000, false, true);
-    driveStop();
     delay(1000);
+    addPulses(4000, false, true);
     driveRight(255);
+    delay(1000);
     addPulses(4000, true, false);
     driveStop();
 }
@@ -21,8 +21,8 @@ void addPulses(int time, bool leftForward, bool rightForward)
   int runtime = time + millis();
   int pulseLeftState;
   int pulseRightState;
-  double pulsesLeft;
-  double pulsesRight;
+  double pulsesLeft = 0;
+  double pulsesRight = 0;
   while(millis() < runtime)
   {
     // Detects pulse on left side
@@ -31,17 +31,27 @@ void addPulses(int time, bool leftForward, bool rightForward)
       pulseLeftState = digitalRead(motorLeftRead);
       pulsesLeft++;
     }
+//    Serial.println();
+//    Serial.println(pulsesLeft);
+//    Serial.println(pulseLeftState);
     // Detects pulse on right side
     if(pulseRightState != digitalRead(motorRightRead))
     {
       pulseRightState = digitalRead(motorRightRead);
       pulsesRight++;
     }
+
     delay(10);
   }
-  double maxPulses = max(pulsesLeft, pulsesRight);
-  double leftOffset  = pulsesLeft/maxPulses;
-  double rightOffset = pulsesRight/maxPulses;
+  Serial.println(); 
+  Serial.println(pulsesRight);
+  Serial.println(pulsesLeft);
+  double maxPulses = max(pulsesLeft, pulsesRight) + 0.00001;
+  double leftOffset  = (float)pulsesLeft/maxPulses;
+  double rightOffset = (float)pulsesRight/maxPulses;
+//  Serial.println();
+//  Serial.println(leftOffset);
+//  Serial.println(rightOffset);
   if(leftForward)
   {
     leftBackwardOffset  = leftOffset;
@@ -58,4 +68,8 @@ void addPulses(int time, bool leftForward, bool rightForward)
   {
     rightForwardOffset  = rightOffset;
   }
+  Serial.println(rightForwardOffset, 5);
+  Serial.println(leftForwardOffset, 5);
+  Serial.println(rightBackwardOffset, 5);
+  Serial.println(leftBackwardOffset, 5);
 }
