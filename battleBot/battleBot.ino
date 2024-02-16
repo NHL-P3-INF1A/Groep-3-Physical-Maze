@@ -24,8 +24,6 @@ const int LED_PIN = 2;
 const int LED_COUNT = 4;
 const int brightness = 125;
 
-const int totalBlinks = 3;
-
 //Led Layout
 const int LB = 0;   //Left Back
 const int RB = 1;   //Right Back
@@ -54,7 +52,7 @@ void setup() {
   pinMode(echoPinSend, OUTPUT);
   // 
   Serial.begin(9600);
-  calibrate();
+  // calibrate();
   driveForward(255);
   //
   //Color setup
@@ -67,5 +65,6 @@ void setup() {
 }
 
 void loop() {
-   addPulses(1000, true, true);
+  delay(1000);
+  blink(LF, 10);
 }

@@ -1,5 +1,6 @@
 //Color for specific light
-void setPixelRgb(int pixel, uint8_t red, uint8_t green, uint8_t blue) {
+void setPixelRgb(int pixel, uint8_t red, uint8_t green, uint8_t blue) 
+{
     strip.setPixelColor(pixel, strip.Color(red, green, blue));
     strip.show();
 }
@@ -10,7 +11,7 @@ void setPixelByName(int pixel, const int color[])
   strip.show();
 }
 
-void blink(int pixel) 
+void blink(int pixel, int totalBlinks) 
 {
   for(int i = 0; i < totalBlinks; i++)
   {
