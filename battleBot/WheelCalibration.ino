@@ -43,9 +43,9 @@ void addPulses(int time, bool leftForward, bool rightForward)
 
     delay(10);
   }
-  Serial.println(); 
-  Serial.println(pulsesRight);
-  Serial.println(pulsesLeft);
+  // Serial.println(); 
+  // Serial.println(pulsesRight);
+  // Serial.println(pulsesLeft);
   double maxPulses = max(pulsesLeft, pulsesRight) + 0.00001;
   double leftOffset  = (float)pulsesLeft/maxPulses;
   double rightOffset = (float)pulsesRight/maxPulses;
@@ -68,8 +68,8 @@ void addPulses(int time, bool leftForward, bool rightForward)
   {
     rightForwardOffset  = rightOffset;
   }
-  Serial.println(rightForwardOffset, 5);
-  Serial.println(leftForwardOffset, 5);
-  Serial.println(rightBackwardOffset, 5);
-  Serial.println(leftBackwardOffset, 5);
+  // Serial.println(rightForwardOffset, 5);
+  // Serial.println(leftForwardOffset, 5);
+  // Serial.println(rightBackwardOffset, 5);
+  // Serial.println(leftBackwardOffset, 5);
 }
