@@ -12,8 +12,8 @@ const int motorRightRead =  7;   // Arduino A1
 
 // Echo Sensor Pins
 const int echoServo = 5;
-const int echoPinRead = A0; // Echo 
-const int echoPinSend = A1; // Trigger 
+const int echoPinRead = 9; // Echo 
+const int echoPinSend = 4; // Trigger 
 const int stopDistance = 10; // Distance threshold to stop the robot (in cm)
 
 // Gripper Pins
@@ -37,6 +37,9 @@ const int GREEN[] = {0, 255, 0};
 const int BLUE[] = {0, 0, 255};
 const int ORANGE[] = {255, 80, 0};
 
+//Infrared sensoren 
+const int IrSensors[] = {A0, A1, A2, A3, A4, A5, A6, A7};
+
 Adafruit_NeoPixel strip(LED_COUNT, LED_PIN, NEO_RGB + NEO_KHZ800);
 
 void setup() {
@@ -50,10 +53,14 @@ void setup() {
   // Echo Sensor
   pinMode(echoPinRead, INPUT);
   pinMode(echoPinSend, OUTPUT);
-  // 
+  // ir Sensoren
+  for(int element : IrSensors)
+  {
+    pinMode(element, INPUT);
+  }
   Serial.begin(9600);
   // calibrate();
-  driveForward(255);
+  // driveForward(255);
   //
   //Color setup
   strip.begin();
@@ -65,6 +72,10 @@ void setup() {
 }
 
 void loop() {
-  delay(1000);
-  blink(LF, 10);
+  for(int element : IrSensors)
+  {
+    Serial.print(analogRead(element));
+    Serial.print(" ");
+  }
+  Serial.println();
 }
