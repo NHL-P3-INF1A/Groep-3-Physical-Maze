@@ -30,7 +30,6 @@ const int RB = 1;   //Right Back
 const int RF = 2;   //Right Front
 const int LF = 3;   //Left Front
 
-
 //Color Values
 const int RED[] = {255, 0, 0};
 const int GREEN[] = {0, 255, 0};
@@ -40,9 +39,13 @@ const int ORANGE[] = {255, 80, 0};
 //Infrared sensoren 
 const int IrSensors[] = {A0, A1, A2, A3, A4, A5, A6, A7};
 
+enum Direction {forward, right, left, backwards, none};
+Direction driveDirection;
+
 Adafruit_NeoPixel strip(LED_COUNT, LED_PIN, NEO_RGB + NEO_KHZ800);
 
-void setup() {
+void setup() 
+{
   // Motor
   pinMode(motorLeftFwd,   OUTPUT);
   pinMode(motorLeftBack,  OUTPUT);
@@ -64,18 +67,31 @@ void setup() {
   //
   //Color setup
   strip.begin();
-  setPixelRgb(LB, 255, 0, 0);
-  setPixelRgb(RB, 255, 0, 0);
-  setPixelRgb(RF, 255, 255, 255);
   setPixelRgb(LF, 255, 255, 255);
+  setPixelRgb(RF, 255, 255, 255);
+  setPixelRgb(LB, 128, 0, 0);
+  setPixelRgb(RB, 128, 0, 0);
   //
 }
 
-void loop() {
-  for(int element : IrSensors)
+void loop() 
+{
+//  for (int element : IrSensors)
+//  {
+//    Serial.print(analogRead(element));
+//    Serial.print(" ");
+//  }
+//  Serial.println();
+  switch(driveDirection)
   {
-    Serial.print(analogRead(element));
-    Serial.print(" ");
+    case left: 
+      blink(LF);
+      break;
+    case right:
+      blink(RF);
+      break;
+    default:
+      blink(100);
+      break;
   }
-  Serial.println();
 }

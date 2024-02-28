@@ -11,13 +11,10 @@ void setPixelByName(int pixel, const int color[])
   strip.show();
 }
 
-void blink(int pixel, int totalBlinks) 
+void blink(int pixel) // Remove delays 
 {
-  for(int i = 0; i < totalBlinks; i++)
-  {
-    setPixelByName(pixel, ORANGE);
-    delay(250);
-    setPixelRgb(pixel, 255, 255, 255);
-    delay(250);
-  }
+  setPixelByName(pixel, ORANGE);
+  delay(250);
+  setPixelRgb(pixel, 255, 255, 255);
+  delay(250);
 }
