@@ -84,17 +84,67 @@ void loop()
 //    Serial.print(" ");
 //  }
 //  Serial.println();
-  switch(driveDirection)
-  {
-    case left: 
-      blink(LF);
-      break;
-    case right:
-      blink(RF);
-      break;
-    default:
-      blink(100);
-      break;
-  }
+
+  // Await signal
+  // Grab object
+  // Enter maze
+
+  // Solve Maze
+    // Drive forward
+    // Detect wall
+      // Stop
+      // Check wall left
+        // if WALL
+          // Check wall right
+            // if WALL
+              // turnBack 
+              // driveForward
+            // else
+              // turnRight
+              // driveForward
+        // else
+          // turnLeft
+          // driveForward
+        
+    if(detectWall())
+    {
+      driveStop();
+      echoSensorLeft();
+      if(detectWall())
+      {
+        echoSensorRight();
+        if(detectWall())
+        {
+          turnBack();
+        }
+        else
+        {
+          turnRight();
+          driveForward();
+        }
+      }
+      else
+      {
+        turnLeft();
+        driveForward();
+      }
+    }
+    else
+    {
+      driveForward();  
+    }
+  
+//  switch(driveDirection)
+//  {
+//    case left: 
+//      blink(LF);
+//      break;
+//    case right:
+//      blink(RF);
+//      break;
+//    default:
+//      blink(100);
+//      break;
+//  }
   // showPulses();
 }
