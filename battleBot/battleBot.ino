@@ -72,9 +72,7 @@ void setup()
   setPixelRgb(LB, 128, 0, 0);
   setPixelRgb(RB, 128, 0, 0);
   //
-  driveForward(255);
 }
-  
 
 void loop() 
 {
@@ -120,18 +118,18 @@ void loop()
         else
         {
           turnRight();
-          driveForward();
+          driveForward(255);
         }
       }
       else
       {
         turnLeft();
-        driveForward();
+        driveForward(255);
       }
     }
     else
     {
-      driveForward();  
+      driveForward(255);  
     }
   
 //  switch(driveDirection)
@@ -147,4 +145,5 @@ void loop()
 //      break;
 //  }
   // showPulses();
+  }
 }
