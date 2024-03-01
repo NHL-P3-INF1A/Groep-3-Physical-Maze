@@ -73,3 +73,32 @@ void addPulses(int time, bool leftForward, bool rightForward)
   // Serial.println(rightBackwardOffset, 5);
   // Serial.println(leftBackwardOffset, 5);
 }
+
+void showPulses()
+  {
+  int pulseLeftState;
+  int pulseRightState;
+  int pulsesLeft;
+  int pulsesRight;
+  while(true)
+  {
+    // Detects pulse on left side
+    if(pulseLeftState != digitalRead(motorLeftRead))
+    {
+      pulseLeftState = digitalRead(motorLeftRead);
+      pulsesLeft++;
+      Serial.print("L: ");
+      Serial.println(pulsesLeft);
+      Serial.print(" ");
+    }
+    // Detects pulse on right side
+    if(pulseRightState != digitalRead(motorRightRead))
+    {
+      pulseRightState = digitalRead(motorRightRead);
+      pulsesRight++;
+      Serial.print("R: ");
+      Serial.println(pulsesRight);
+      Serial.print(" ");
+    }
+  }
+}

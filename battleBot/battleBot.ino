@@ -72,7 +72,9 @@ void setup()
   setPixelRgb(LB, 128, 0, 0);
   setPixelRgb(RB, 128, 0, 0);
   //
+  driveForward(255);
 }
+  
 
 void loop() 
 {
@@ -94,4 +96,5 @@ void loop()
       blink(100);
       break;
   }
+  // showPulses();
 }
