@@ -41,3 +41,24 @@ void driveStop()
   setMotors(0, 0, 0, 0);
   driveDirection = none;
 }
+
+void turnLeft()
+{
+  driveLeft(255);
+  delay(380);
+  driveStop();
+}
+
+void turnRight()
+{
+  driveRight(255);
+  delay(380);
+  driveStop();
+}
+
+void turnBack()
+{
+  driveLeft(255);
+  delay(760);
+  driveStop();
+}
