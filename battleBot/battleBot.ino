@@ -118,17 +118,16 @@ void loop()
         else
         {
           turnRight();
-          driveForward(255);
         }
       }
       else
       {
         turnLeft();
-        driveForward(255);
       }
     }
     else
     {
+      echoSensorForward();
       driveForward(255);  
     }
   
@@ -145,5 +144,4 @@ void loop()
 //      break;
 //  }
   // showPulses();
-  }
 }
