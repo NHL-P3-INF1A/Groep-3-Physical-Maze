@@ -44,6 +44,9 @@ Direction driveDirection;
 
 Adafruit_NeoPixel strip(LED_COUNT, LED_PIN, NEO_RGB + NEO_KHZ800);
 
+int pulsesLeft = 0;
+int pulsesRight = 0;
+
 void setup() 
 {
   // Motor
@@ -51,8 +54,8 @@ void setup()
   pinMode(motorLeftBack,  OUTPUT);
   pinMode(motorRightBack, OUTPUT);
   pinMode(motorRightFwd,  OUTPUT);
-  pinMode(motorLeftRead,  INPUT);
-  pinMode(motorRightRead, INPUT);
+  attachInterrupt(digitalPinToInterrupt(motorLeftRead), incrementPulseLeft, CHANGE);
+  attachInterrupt(digitalPinToInterrupt(motorRightRead), incrementPulseRight, CHANGE);
   // Echo Sensor
   pinMode(echoPinRead, INPUT);
   pinMode(echoPinSend, OUTPUT);
@@ -62,9 +65,6 @@ void setup()
     pinMode(element, INPUT);
   }
   Serial.begin(9600);
-  // calibrate();
-  // driveForward(255);
-  //
   //Color setup
   strip.begin();
   setPixelRgb(LF, 255, 255, 255);
@@ -76,13 +76,6 @@ void setup()
 
 void loop() 
 {
-//  for (int element : IrSensors)
-//  {
-//    Serial.print(analogRead(element));
-//    Serial.print(" ");
-//  }
-//  Serial.println();
-
   // Await signal
   // Grab object
   // Enter maze
@@ -143,5 +136,9 @@ void loop()
 //      blink(100);
 //      break;
 //  }
-  // showPulses();
+  Serial.print("Left pulses = ");
+  Serial.print(pulsesLeft);
+  Serial.print(" | Right pulses = ");
+  Serial.print(pulsesRight);
+  Serial.println();
 }

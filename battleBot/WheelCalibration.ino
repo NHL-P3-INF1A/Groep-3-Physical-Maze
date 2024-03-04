@@ -102,3 +102,17 @@ void showPulses()
     }
   }
 }
+
+void incrementPulseLeft()
+{
+  noInterrupts();
+  pulsesLeft++;
+  interrupts();
+}
+
+void incrementPulseRight()
+{
+  noInterrupts();
+  pulsesRight++;
+  interrupts();
+}
