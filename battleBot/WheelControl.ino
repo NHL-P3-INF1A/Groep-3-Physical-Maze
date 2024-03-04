@@ -45,15 +45,19 @@ void driveStop()
 void turnLeft()
 {
   driveLeft(255);
+  setPixelByName(LF, ORANGE);
   delay(380);
   driveStop();
+  setPixelRgb(LF, 255, 255, 255);
 }
 
 void turnRight()
 {
   driveRight(255);
+  setPixelByName(RF, ORANGE);
   delay(380);
   driveStop();
+  setPixelRgb(RF, 255, 255, 255);
 }
 
 void turnBack()

@@ -7,8 +7,8 @@ const int motorLeftFwd =    11;  // Motor A2 LF
 const int motorRightFwd =   10;  // Motor B1 RF
 const int motorRightBack =  6;   // Motor B2 RB
 
-const int motorLeftRead =   8;   // Arduino A0
-const int motorRightRead =  7;   // Arduino A1
+const int motorLeftRead =   3;   // Interrupt Left motor
+const int motorRightRead =  2;   // Interrupt Right motor
 
 // Echo Sensor Pins
 const int echoServo = 5;
@@ -17,10 +17,10 @@ const int echoPinSend = 4; // Trigger
 const int stopDistance = 10; // Distance threshold to stop the robot (in cm)
 
 // Gripper Pins
-const int gripperServo = 3;
+const int gripperServo = 7;
 
 //LED
-const int LED_PIN = 2;
+const int LED_PIN = 8;
 const int LED_COUNT = 4;
 const int brightness = 125;
 
