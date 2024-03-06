@@ -37,7 +37,10 @@ const int BLUE[] = {0, 0, 255};
 const int ORANGE[] = {255, 80, 0};
 
 //Infrared sensoren 
-const int IrSensors[] = {A0, A1, A2, A3, A4, A5, A6, A7};
+const int IrSensors[] = {A7, A6, A5, A4, A3, A2, A1, A0}; // From left to right when looking from the back
+
+//Aaray for IrSensor
+int sensorOffsets[8];
 
 enum Direction {forward, right, left, backwards, none};
 Direction driveDirection;
@@ -72,6 +75,8 @@ void setup()
   setPixelRgb(LB, 128, 0, 0);
   setPixelRgb(RB, 128, 0, 0);
   //
+
+  calibrateIrSensors(1000);
 }
 
 void loop() 
@@ -79,6 +84,8 @@ void loop()
   // Await signal
   // Grab object
   // Enter maze
+
+  readIrOutput();
 
   // Solve Maze
     // Drive forward
@@ -97,32 +104,32 @@ void loop()
           // turnLeft
           // driveForward
         
-    if(detectWall())
-    {
-      driveStop();
-      echoSensorLeft();
-      if(detectWall())
-      {
-        echoSensorRight();
-        if(detectWall())
-        {
-          turnBack();
-        }
-        else
-        {
-          turnRight();
-        }
-      }
-      else
-      {
-        turnLeft();
-      }
-    }
-    else
-    {
-      echoSensorForward();
-      driveForward(255);  
-    }
+    // if(detectWall())
+    // {
+    //   driveStop();
+    //   echoSensorLeft();
+    //   if(detectWall())
+    //   {
+    //     echoSensorRight();
+    //     if(detectWall())
+    //     {
+    //       turnBack();
+    //     }
+    //     else
+    //     {
+    //       turnRight();
+    //     }
+    //   }
+    //   else
+    //   {
+    //     turnLeft();
+    //   }
+    // }
+    // else
+    // {
+    //   echoSensorForward();
+    //   driveForward(255);  
+    // }
   
 //  switch(driveDirection)
 //  {
@@ -136,9 +143,10 @@ void loop()
 //      blink(100);
 //      break;
 //  }
-  Serial.print("Left pulses = ");
-  Serial.print(pulsesLeft);
-  Serial.print(" | Right pulses = ");
-  Serial.print(pulsesRight);
-  Serial.println();
+
+  // Serial.print("Left pulses = ");
+  // Serial.print(pulsesLeft);
+  // Serial.print(" | Right pulses = ");
+  // Serial.print(pulsesRight);
+  // Serial.println();
 }
