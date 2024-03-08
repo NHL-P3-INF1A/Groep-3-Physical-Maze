@@ -3,7 +3,7 @@ double leftBackwardOffset = 1;
 double rightForwardOffset = 1;  
 double rightBackwardOffset = 1;
 
-// Drive sequence to calibrate the wheels
+// ==== [ Drive sequence to calibrate the wheels ] ============================
 void calibrate()
 {
     driveLeft(255);
@@ -15,7 +15,7 @@ void calibrate()
     driveStop();
 }
 
-// Collects pulses for the given time and sets offset values 
+// ==== [ Collects pulses for the given time and sets offset values ] =========
 void addPulses(int time, bool leftForward, bool rightForward)
 {
   int runtime = time + millis();

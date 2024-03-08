@@ -1,4 +1,4 @@
-//Color for specific light
+// ==== [ Color for specific light ] ==========================================
 void setPixelRgb(int pixel, uint8_t red, uint8_t green, uint8_t blue) 
 {
     strip.setPixelColor(pixel, strip.Color(red, green, blue));

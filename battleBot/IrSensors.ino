@@ -16,7 +16,6 @@
 // }
 void calibrateIrSensors(int time)
 {
-
   int runtime = millis() + time;
   int count = 0;
   while(runtime > millis())
@@ -32,7 +31,7 @@ void calibrateIrSensors(int time)
       }
 
       int offset = base - analogRead(element);
-      sensorOffsets[i] += offset;
+      sensorOffsets[i] += abs(offset);
       i++;
     }
     count++;
