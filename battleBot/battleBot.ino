@@ -2,46 +2,47 @@
 #include <Adafruit_NeoPixel.h>
 
 // ==== [ Motor Pins ] ========================================================
-const int motorLeftBack =   12;  // Motor A1 LB
-const int motorLeftFwd =    11;  // Motor A2 LF
-const int motorRightFwd =   10;  // Motor B1 RF
-const int motorRightBack =  6;   // Motor B2 RB
+#define   MOTOR_LEFT_BACK         12  // Motor A1 LB
+#define   MOTOR_LEFT_FORWARD      11  // Motor A2 LF
+#define   MOTOR_RIGHT_FORWARD     10  // Motor B1 RF
+#define   MOTOR_RIGHT_BACK        6   // Motor B2 RB
 
-const int motorLeftRead =   3;   // Interrupt Left motor
-const int motorRightRead =  2;   // Interrupt Right motor
+#define   MOTOR_LEFT_READ         3   // Interrupt Left motor
+#define   MOTOR_RIGHT_READ        2   // Interrupt Right motor
 
 // ==== [ Echo Sensor Pins ] ==================================================
-const int echoServo = 5;
-const int echoPinRead = 9;    // Echo 
-const int echoPinSend = 4;    // Trigger 
-const int stopDistance = 10;  // Distance threshold to stop the robot (in cm)
+#define   ECHO_SERVO              5
+#define   ECHO_READ               9   // Echo 
+#define   ECHO_SEND               4   // Trigger 
+#define   STOP_DISTANCE           10  // Distance threshold to stop the robot (in cm)
 
 
 // ==== [ Gripper Pins ] ======================================================
-const int gripperServo = 7;
+#define   GRIPPER_SERVO           7
 
 // ==== [ LED ] ===============================================================
-const int LED_PIN = 8;
-const int LED_COUNT = 4;
-const int brightness = 125;
+#define   LED_PIN                 8
+#define   LED_COUNT               4
+#define   BRIGHTNESS              125
 
 // ==== [ Led Layout ] ========================================================
-const int ledLeftBack = 0;      //Left Back
-const int ledRightBack = 1;     //Right Back
-const int ledRightFront = 2;    //Right Front
-const int ledLeftFront = 3;     //Left Front
+#define   LED_LEFT_BACK           0   // Left Back
+#define   LED_RIGHT_BACK          1   // Right Back
+#define   LED_RIGHT_FRONT         2   // Right Front
+#define   LED_LEFT_FRONT          3   // Left Front
 
 // ==== [ Color Values ] ======================================================
-const int RED[] = {255, 0, 0};
-const int GREEN[] = {0, 255, 0};
-const int BLUE[] = {0, 0, 255};
-const int ORANGE[] = {255, 80, 0};
+const int RED[]                 = {255, 0, 0};
+const int GREEN[]               = {0, 255, 0};
+const int BLUE[]                = {0, 0, 255};
+const int ORANGE[]              = {255, 80, 0};
 
 // ==== [ Infrared Sensoren ] =================================================
-const int IrSensors[] = {A7, A6, A5, A4, A3, A2, A1, A0}; // From left to right when looking from the back
+const int IR_SENSORS[]          = {A7, A6, A5, A4, A3, A2, A1, A0}; // From left to right when looking from the back
 
 // ==== [ Array for IrSensor ] ================================================
-int sensorOffsets[8];
+int sensorTresholds[8][2];
+bool sensorColor[8];
 
 enum Direction {forward, right, left, backwards, none};
 Direction driveDirection;
@@ -54,30 +55,28 @@ int pulsesRight = 0;
 void setup() 
 {
   // Motor
-  pinMode(motorLeftFwd, OUTPUT);
-  pinMode(motorLeftBack, OUTPUT);
-  pinMode(motorRightBack, OUTPUT);
-  pinMode(motorRightFwd, OUTPUT);
-  attachInterrupt(digitalPinToInterrupt(motorLeftRead), incrementPulseLeft, CHANGE);
-  attachInterrupt(digitalPinToInterrupt(motorRightRead), incrementPulseRight, CHANGE);
+  pinMode(MOTOR_LEFT_FORWARD, OUTPUT);
+  pinMode(MOTOR_LEFT_BACK, OUTPUT);
+  pinMode(MOTOR_RIGHT_BACK, OUTPUT);
+  pinMode(MOTOR_RIGHT_FORWARD, OUTPUT);
+  attachInterrupt(digitalPinToInterrupt(MOTOR_LEFT_READ), incrementPulseLeft, CHANGE);
+  attachInterrupt(digitalPinToInterrupt(MOTOR_RIGHT_READ), incrementPulseRight, CHANGE);
   // Echo Sensor
-  pinMode(echoPinRead, INPUT);
-  pinMode(echoPinSend, OUTPUT);
+  pinMode(ECHO_READ, INPUT);
+  pinMode(ECHO_SEND, OUTPUT);
   // ir Sensoren
-  for(int element : IrSensors)
+  for(int element : IR_SENSORS)
   {
     pinMode(element, INPUT);
   }
   Serial.begin(9600);
   //Color setup
   strip.begin();
-  setPixelRgb(ledLeftFront, 255, 255, 255);
-  setPixelRgb(ledRightFront, 255, 255, 255);
-  setPixelRgb(ledLeftBack, 128, 0, 0);
-  setPixelRgb(ledRightBack, 128, 0, 0);
+  setPixelRgb(LED_LEFT_FRONT, 255, 255, 255);
+  setPixelRgb(LED_RIGHT_FRONT, 255, 255, 255);
+  setPixelRgb(LED_LEFT_BACK, 128, 0, 0);
+  setPixelRgb(LED_RIGHT_BACK, 128, 0, 0);
   //
-
-  calibrateIrSensors(1000);
 }
 
 void loop() 
@@ -86,7 +85,7 @@ void loop()
   // Grab object
   // Enter maze
 
-  blink(ledRightFront);
+  readIrOutput();
 
   // Solve Maze
     // Drive forward

@@ -1,10 +1,10 @@
 // ==== [ Sets motor power to input ] =========================================
 void setMotors(int LFWD, int LBACK, int RFWD, int RBACK)
 {
-  analogWrite(motorLeftFwd,   LFWD * leftForwardOffset);
-  analogWrite(motorLeftBack,  LBACK * leftBackwardOffset);
-  analogWrite(motorRightFwd,  RFWD * rightForwardOffset);
-  analogWrite(motorRightBack, RBACK * rightBackwardOffset);
+  analogWrite(MOTOR_LEFT_FORWARD,   LFWD * leftForwardOffset);
+  analogWrite(MOTOR_LEFT_BACK,  LBACK * leftBackwardOffset);
+  analogWrite(MOTOR_RIGHT_FORWARD,  RFWD * rightForwardOffset);
+  analogWrite(MOTOR_RIGHT_BACK, RBACK * rightBackwardOffset);
 }
 
 // ==== [ Rotate left at 0-255 speed ] ========================================
@@ -45,19 +45,19 @@ void driveStop()
 void turnLeft()
 {
   driveLeft(255);
-  setPixelByName(ledLeftFront, ORANGE);
+  setPixelByName(LED_LEFT_FRONT, ORANGE);
   delay(380);
   driveStop();
-  setPixelRgb(ledLeftFront, 255, 255, 255);
+  setPixelRgb(LED_LEFT_FRONT, 255, 255, 255);
 }
 
 void turnRight()
 {
   driveRight(255);
-  setPixelByName(ledRightFront, ORANGE);
+  setPixelByName(LED_RIGHT_FRONT, ORANGE);
   delay(380);
   driveStop();
-  setPixelRgb(ledRightFront, 255, 255, 255);
+  setPixelRgb(LED_RIGHT_FRONT, 255, 255, 255);
 }
 
 void turnBack()

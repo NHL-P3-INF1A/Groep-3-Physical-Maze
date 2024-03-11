@@ -1,72 +1,95 @@
-// Variabel voor hoogste waarde
-// Variabel voor laagste waarde
-
-// Hytsteresis maken die de hoogste met laagste waarde gebruikt
-
-// Dit per sensor doen
-
-// void readIrOutput()
-// {
-//   for (int element : IrSensors)
-//  {
-//    Serial.print(analogRead(element));
-//    Serial.print(" ");
-//  }
-//  Serial.println();
-// }
-void calibrateIrSensors(int time)
+void readIrOutput()
 {
-  int runtime = millis() + time;
-  int count = 0;
-  while(runtime > millis())
+  for (int sensorPin : IR_SENSORS)
   {
-    int base = 0;
+    Serial.print(analogRead(sensorPin));
+    Serial.print(" ");
+  }
+  Serial.print(" 800");
+  Serial.println();
+}
+
+void getIrColors()
+{
     int i = 0;
-    for (int element : IrSensors)
+    for (int sensorPin : IR_SENSORS)
     {
-      if(base == 0)
+      int value = analogRead(sensorPin);
+      if (value > sensorTresholds[i][1])
       {
-        base = analogRead(element);
-        continue;
+        sensorColor[i] = false;
+
+      }
+      else if (value < sensorTresholds[i][0])
+      {
+        sensorColor[i] = true;
       }
 
-      int offset = base - analogRead(element);
-      sensorOffsets[i] += abs(offset);
+      if(sensorColor[i])
+      {
+        Serial.print("White");  
+      }
+      else
+      {
+        Serial.print("Black");          
+      }
       i++;
+      Serial.print(" ");
     }
-    count++;
+    Serial.println();
+}
+
+void setIrThresholds(int time)
+{
+  // Lijst structuur voor thresholds opslaan [[200, 300], [100, 293]] : [[whiteThreshold, blackThreshold], ...]
+  
+  // Zet witte tresholds
+  int runtime = millis() + time;
+  Serial.println("Detecting white");
+  while (runtime > millis())
+  {
+    updateThreshold(0);
   }
 
-  Serial.println(count);
-  Serial.println();
-  int i = 0;
-  for (int element : sensorOffsets)
+  // Wacht op hogere waarden
+  while (true)
   {
-    Serial.println(element);
-    sensorOffsets[i] = element / count; 
-    // Serial.println(sensorOffsets[i]);
-    i++;
+    int i = 0;
+    bool detectedWhite = false;
+    for (int sensorPin : IR_SENSORS)
+    {
+      if (sensorTresholds[i][0] + 200 > analogRead(sensorPin))
+      {
+        detectedWhite = true;
+        break;
+      }  
+      i++;
+    }
+    if(!detectedWhite)
+    {
+      break;  
+    }
+  }
+ 
+  // Zet zwarte tresholds
+  runtime = millis() + time;
+  Serial.println("Detecting black");
+  while (runtime > millis())
+  {
+    updateThreshold(1);
   }
 }
 
-void readIrOutput()
+void updateThreshold(int index)
 {
-
-  // Loop door alle sensoren heen
-    // Pak sensor 0 als "base"
-    // pak het verschil tussen de base en elke andere sensor
-      // sla dit op
-  int i = 0;
-  for (int element : IrSensors)
-  {
-    int value = analogRead(element); // + sensorOffsets[i];
-    bool isDark = value > 650;
-    // Serial.print(isDark);
-    // Serial.print(":");
-    // Serial.print(value);
-    // Serial.print(" ");
-
-    i++;
-  }
-  // Serial.println();
+    int i = 0;
+    for (int sensorPin : IR_SENSORS)
+    {
+      int value = analogRead(sensorPin);
+      if(value > sensorTresholds[i][index])
+      {
+        sensorTresholds[i][index] = value;
+      }
+      i++;
+    }
 }

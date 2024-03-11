@@ -26,18 +26,18 @@ void addPulses(int time, bool leftForward, bool rightForward)
   while(millis() < runtime)
   {
     // Detects pulse on left side
-    if(pulseLeftState != digitalRead(motorLeftRead))
+    if(pulseLeftState != digitalRead(MOTOR_LEFT_READ))
     {
-      pulseLeftState = digitalRead(motorLeftRead);
+      pulseLeftState = digitalRead(MOTOR_LEFT_READ);
       pulsesLeft++;
     }
 //    Serial.println();
 //    Serial.println(pulsesLeft);
 //    Serial.println(pulseLeftState);
     // Detects pulse on right side
-    if(pulseRightState != digitalRead(motorRightRead))
+    if(pulseRightState != digitalRead(MOTOR_RIGHT_READ))
     {
-      pulseRightState = digitalRead(motorRightRead);
+      pulseRightState = digitalRead(MOTOR_RIGHT_READ);
       pulsesRight++;
     }
 
@@ -83,18 +83,18 @@ void showPulses()
   while(true)
   {
     // Detects pulse on left side
-    if(pulseLeftState != digitalRead(motorLeftRead))
+    if (pulseLeftState != digitalRead(MOTOR_LEFT_READ))
     {
-      pulseLeftState = digitalRead(motorLeftRead);
+      pulseLeftState = digitalRead(MOTOR_LEFT_READ);
       pulsesLeft++;
       Serial.print("L: ");
       Serial.println(pulsesLeft);
       Serial.print(" ");
     }
     // Detects pulse on right side
-    if(pulseRightState != digitalRead(motorRightRead))
+    if(pulseRightState != digitalRead(MOTOR_RIGHT_READ))
     {
-      pulseRightState = digitalRead(motorRightRead);
+      pulseRightState = digitalRead(MOTOR_RIGHT_READ);
       pulsesRight++;
       Serial.print("R: ");
       Serial.println(pulsesRight);

@@ -1,15 +1,15 @@
 bool detectWall()
 {
   // Stop if distance is less than or equal to stopDistance
-  return (distanceFromObject() <= stopDistance) ? true : false;
+  return (distanceFromObject() <= STOP_DISTANCE) ? true : false;
 }
 
 double distanceFromObject()
 {
-  digitalWrite(echoPinSend, LOW);
+  digitalWrite(ECHO_SEND, LOW);
   delayMicroseconds(2);
-  digitalWrite(echoPinSend, HIGH);
+  digitalWrite(ECHO_SEND, HIGH);
   delayMicroseconds(10);
-  digitalWrite(echoPinSend, LOW);
-  return pulseIn(echoPinRead, HIGH) * 0.034 / 2;
+  digitalWrite(ECHO_SEND, LOW);
+  return pulseIn(ECHO_READ, HIGH) * 0.034 / 2;
 }
