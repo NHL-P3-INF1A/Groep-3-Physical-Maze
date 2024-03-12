@@ -30,9 +30,6 @@ double rotationInDegrees;
 // ==== [ Gripper Pins ] ======================================================
 #define   GRIPPER_SERVO           7
 
-// ==== [ LED ] ===============================================================
-
-
 // ==== [ Led Layout ] ========================================================
 #define   LED_LEFT_BACK           0   // Left Back
 #define   LED_RIGHT_BACK          1   // Right Back
@@ -55,10 +52,6 @@ bool sensorColor[8];
 enum Direction {forward, right, left, backwards, none};
 Direction driveDirection;
 
-
-int pulsesLeft = 0;
-int pulsesRight = 0;
-
 void setup() 
 {
   Serial.begin(9600);
@@ -74,6 +67,7 @@ void setup()
   // Echo Sensor
   pinMode(ECHO_READ, INPUT);
   pinMode(ECHO_SEND, OUTPUT);
+  
   // IR Sensoren
   for(int element : IR_SENSORS)
   {
@@ -144,10 +138,4 @@ void loop()
 //      blink(100);
 //      break;
 //  }
-
-  // Serial.print("Left pulses = ");
-  // Serial.print(pulsesLeft);
-  // Serial.print(" | Right pulses = ");
-  // Serial.print(pulsesRight);
-  // Serial.println();
 }
