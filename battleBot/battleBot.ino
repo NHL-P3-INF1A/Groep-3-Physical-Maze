@@ -49,6 +49,10 @@ const int IR_SENSORS[]          = {A7, A6, A5, A4, A3, A2, A1, A0}; // From left
 int sensorTresholds[8][2];
 bool sensorColor[8];
 
+// ==== [ Wheelcontrol counters]  =============================================
+int pulsesLeft                  = 0;
+int pulsesRight                 = 0;
+
 enum Direction {forward, right, left, backwards, none};
 Direction driveDirection;
 

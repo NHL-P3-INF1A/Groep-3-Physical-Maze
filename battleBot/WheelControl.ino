@@ -1,10 +1,10 @@
 // ==== [ Sets motor power to input ] =========================================
 void setMotors(int LFWD, int LBACK, int RFWD, int RBACK)
 {
-  analogWrite(MOTOR_LEFT_FORWARD,   LFWD * leftForwardOffset);
-  analogWrite(MOTOR_LEFT_BACK,  LBACK * leftBackwardOffset);
-  analogWrite(MOTOR_RIGHT_FORWARD,  RFWD * rightForwardOffset);
-  analogWrite(MOTOR_RIGHT_BACK, RBACK * rightBackwardOffset);
+  analogWrite(MOTOR_LEFT_FORWARD,   LFWD);
+  analogWrite(MOTOR_LEFT_BACK,  LBACK);
+  analogWrite(MOTOR_RIGHT_FORWARD,  RFWD);
+  analogWrite(MOTOR_RIGHT_BACK, RBACK);
 }
 
 // ==== [ Rotate left at 0-255 speed ] ========================================
@@ -65,4 +65,14 @@ void turnBack()
   driveLeft(255);
   delay(760);
   driveStop();
+}
+
+void incrementPulseLeft()
+{
+  pulsesLeft++;
+}
+
+void incrementPulseRight()
+{
+  pulsesRight++;
 }

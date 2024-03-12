@@ -5,7 +5,7 @@ sensors_event_t temp;
 void updateRotation()
 {
   lsm6ds3trc.getEvent(&accel, &gyro, &temp);
-  static unsigned long timer;
+  static unsigned int timer;
   double interval = 100;
   double updatesPerSecond = (1000 / interval);
   if(millis() > timer)
