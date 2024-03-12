@@ -1,5 +1,15 @@
 // ==== [ Neopixel Setup ] ====================================================
 #include <Adafruit_NeoPixel.h>
+#define   LED_PIN                 8
+#define   LED_COUNT               4
+#define   BRIGHTNESS              125
+Adafruit_NeoPixel strip(LED_COUNT, LED_PIN, NEO_RGB + NEO_KHZ800);
+
+// ==== [ Gyroscope Setup] ====================================================
+#include <Adafruit_LSM6DS3TRC.h>
+Adafruit_LSM6DS3TRC lsm6ds3trc;
+#define PI 3.1415926535897932384626433832795
+double rotationInDegrees;
 
 // ==== [ Motor Pins ] ========================================================
 #define   MOTOR_LEFT_BACK         12  // Motor A1 LB
@@ -21,9 +31,7 @@
 #define   GRIPPER_SERVO           7
 
 // ==== [ LED ] ===============================================================
-#define   LED_PIN                 8
-#define   LED_COUNT               4
-#define   BRIGHTNESS              125
+
 
 // ==== [ Led Layout ] ========================================================
 #define   LED_LEFT_BACK           0   // Left Back
@@ -47,13 +55,14 @@ bool sensorColor[8];
 enum Direction {forward, right, left, backwards, none};
 Direction driveDirection;
 
-Adafruit_NeoPixel strip(LED_COUNT, LED_PIN, NEO_RGB + NEO_KHZ800);
 
 int pulsesLeft = 0;
 int pulsesRight = 0;
 
 void setup() 
 {
+  Serial.begin(9600);
+  
   // Motor
   pinMode(MOTOR_LEFT_FORWARD, OUTPUT);
   pinMode(MOTOR_LEFT_BACK, OUTPUT);
@@ -61,49 +70,41 @@ void setup()
   pinMode(MOTOR_RIGHT_FORWARD, OUTPUT);
   attachInterrupt(digitalPinToInterrupt(MOTOR_LEFT_READ), incrementPulseLeft, CHANGE);
   attachInterrupt(digitalPinToInterrupt(MOTOR_RIGHT_READ), incrementPulseRight, CHANGE);
+  
   // Echo Sensor
   pinMode(ECHO_READ, INPUT);
   pinMode(ECHO_SEND, OUTPUT);
-  // ir Sensoren
+  // IR Sensoren
   for(int element : IR_SENSORS)
   {
     pinMode(element, INPUT);
   }
-  Serial.begin(9600);
-  //Color setup
+  
+  // Color setup
   strip.begin();
   setPixelRgb(LED_LEFT_FRONT, 255, 255, 255);
   setPixelRgb(LED_RIGHT_FRONT, 255, 255, 255);
   setPixelRgb(LED_LEFT_BACK, 128, 0, 0);
   setPixelRgb(LED_RIGHT_BACK, 128, 0, 0);
-  //
+  
+  // Check if gyro sensor chip works
+  if (!lsm6ds3trc.begin_I2C()) 
+  {
+    Serial.println("Failed to find LSM6DS3TR-C chip");
+  }
+  lsm6ds3trc.configInt1(false, false, true); // accelerometer DRDY on INT1
+  lsm6ds3trc.configInt2(false, true, false); // gyro DRDY on INT2
 }
 
+// Await signal
+// Grab object
+// Enter maze
 void loop() 
 {
-  // Await signal
-  // Grab object
-  // Enter maze
+  Serial.println(rotationInDegrees);
+  updateRotation();
+//  readIrOutput();
 
-  readIrOutput();
-
-  // Solve Maze
-    // Drive forward
-    // Detect wall
-      // Stop
-      // Check wall left
-        // if WALL
-          // Check wall right
-            // if WALL
-              // turnBack 
-              // driveForward
-            // else
-              // turnRight
-              // driveForward
-        // else
-          // turnLeft
-          // driveForward
-        
     // if(detectWall())
     // {
     //   driveStop();
