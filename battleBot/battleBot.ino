@@ -21,9 +21,10 @@ double rotationInDegrees;
 
 // ==== [ Echo Sensor Pins ] ==================================================
 #define   ECHO_SERVO              5   // Servo for echo sensor rotation
-#define   ECHO_READ               9   // Echo 
-#define   ECHO_SEND               4   // Trigger 
+#define   ECHO_READ               9   // Echo
+#define   ECHO_SEND               4   // Trigger
 #define   STOP_DISTANCE           10  // Distance threshold to stop the robot (in cm)
+double    distanceFromNextWall  = 0;
 
 
 // ==== [ Gripper Pins ] ======================================================
@@ -56,10 +57,10 @@ int pulsesRight                 = 0;
 enum Direction {forward, right, left, backwards, none};
 Direction driveDirection;
 
-void setup() 
+void setup()
 {
   Serial.begin(9600);
-  
+ 
   // Motor
   pinMode(MOTOR_LEFT_FORWARD, OUTPUT);
   pinMode(MOTOR_LEFT_BACK, OUTPUT);
@@ -67,26 +68,26 @@ void setup()
   pinMode(MOTOR_RIGHT_FORWARD, OUTPUT);
   attachInterrupt(digitalPinToInterrupt(MOTOR_LEFT_READ), incrementPulseLeft, CHANGE);
   attachInterrupt(digitalPinToInterrupt(MOTOR_RIGHT_READ), incrementPulseRight, CHANGE);
-  
+
   // Echo Sensor
   pinMode(ECHO_READ, INPUT);
   pinMode(ECHO_SEND, OUTPUT);
-  
+
   // IR Sensoren
   for(int element : IR_SENSORS)
   {
     pinMode(element, INPUT);
   }
-  
+
   // Color setup
   strip.begin();
   setPixelRgb(LED_LEFT_FRONT, 255, 255, 255);
   setPixelRgb(LED_RIGHT_FRONT, 255, 255, 255);
   setPixelRgb(LED_LEFT_BACK, 128, 0, 0);
   setPixelRgb(LED_RIGHT_BACK, 128, 0, 0);
-  
+
   // Check if gyro sensor chip works
-  if (!lsm6ds3trc.begin_I2C()) 
+  if (!lsm6ds3trc.begin_I2C())
   {
     Serial.println("Failed to find LSM6DS3TR-C chip");
   }
@@ -97,22 +98,18 @@ void setup()
 // Await signal
 // Grab object
 // Enter maze
-void loop() 
+void loop()
 {
-  
-  updateRotation();
-  turnToAngle(90);
-  
-//  switch(driveDirection)
-//  {
-//    case left: 
-//      blinkLed(LED_LEFT_FRONT);
-//      break;
-//    case right:
-//      blinkLed(LED_RIGHT_FRONT);
-//      break;
-//    default:
-//      blinkLed(100);
-//      break;
-//  }
+  switch(driveDirection)
+  {
+    case left:
+      blinkLed(LED_LEFT_FRONT);
+      break;
+    case right:
+      blinkLed(LED_RIGHT_FRONT);
+      break;
+    default:
+      blinkLed(100);
+      break;
+  }
 }

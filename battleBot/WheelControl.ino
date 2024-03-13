@@ -77,6 +77,7 @@ void incrementPulseRight()
   pulsesRight++;
 }
 
+<<<<<<< HEAD
 void turnToAngle(double wantedRotation)
 {
     if(isRightTurnFaster(wantedRotation))
@@ -115,3 +116,9 @@ double wrapAngle(int rotationToWrap)
   }
   return rotationToWrap;
 }
+=======
+double pulsesToCentimeters(int pulses)
+{
+    return ((pulses / 40) * 6.6 * PI);
+}
+>>>>>>> bbb15df649d95f00dca2569ab2319564ad246cdd
