@@ -24,7 +24,7 @@ double rotationInDegrees;
 #define   ECHO_READ               9   // Echo
 #define   ECHO_SEND               4   // Trigger
 #define   STOP_DISTANCE           10  // Distance threshold to stop the robot (in cm)
-double    distanceFromNextWall  = null;
+double    distanceFromNextWall  = 0;
 
 
 // ==== [ Gripper Pins ] ======================================================

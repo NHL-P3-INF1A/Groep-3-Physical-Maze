@@ -23,7 +23,9 @@ double distanceFromObject()
 
 void checkPassage()
 {
-  if (distanceFromNextWall = null)
+  static int pulseOffset;
+
+  if (distanceFromNextWall = 0)
   {
     echoSensorForward();
     delay(200);
@@ -32,13 +34,14 @@ void checkPassage()
     delay(200);
   }
 
-  if ((pulsesToCentimeters(pulsesLeft) + 15) >= distanceFromNextWall)
+  if ((pulsesToCentimeters((pulsesLeft - pulseOffset)) + 15) >= distanceFromNextWall)
   {
     driveStop();
     if (!detectWall())
     {
       turnLeft();
-      distanceFromNextWall = null;
+      distanceFromNextWall = 0;
+      pulseOffset = pulsesLeft;
       return;
     }
 
@@ -47,18 +50,21 @@ void checkPassage()
     if (!detectWall())
     {
       turnRight();
-      distanceFromNextWall = null;
+      distanceFromNextWall = 0;
+      pulseOffset = pulsesLeft;
     }
     else
     {
       turnBack();
-      distanceFromNextWall = null;
+      distanceFromNextWall = 0;
+      pulseOffset = pulsesLeft;
     }
   }
 
     if (!detectWall())
     {
       turnLeft();
-      distanceFromNextWall = null;
+      distanceFromNextWall = 0;
+      pulseOffset = pulsesLeft;
     }
 }
