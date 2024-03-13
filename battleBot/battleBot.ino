@@ -1,14 +1,13 @@
 // ==== [ Neopixel Setup ] ====================================================
 #include <Adafruit_NeoPixel.h>
-#define   LED_PIN                 8
-#define   LED_COUNT               4
-#define   BRIGHTNESS              125
+#define   LED_PIN                 8   // Pin that the neopixels are connected to
+#define   LED_COUNT               4   // Amount of LEDs
 Adafruit_NeoPixel strip(LED_COUNT, LED_PIN, NEO_RGB + NEO_KHZ800);
 
 // ==== [ Gyroscope Setup] ====================================================
 #include <Adafruit_LSM6DS3TRC.h>
 Adafruit_LSM6DS3TRC lsm6ds3trc;
-#define PI 3.1415926535897932384626433832795
+#define PI 3.1415926535897932384626433832795 // Value of Pi
 double rotationInDegrees;
 
 // ==== [ Motor Pins ] ========================================================
@@ -21,14 +20,14 @@ double rotationInDegrees;
 #define   MOTOR_RIGHT_READ        2   // Interrupt Right motor
 
 // ==== [ Echo Sensor Pins ] ==================================================
-#define   ECHO_SERVO              5
+#define   ECHO_SERVO              5   // Servo for echo sensor rotation
 #define   ECHO_READ               9   // Echo 
 #define   ECHO_SEND               4   // Trigger 
 #define   STOP_DISTANCE           10  // Distance threshold to stop the robot (in cm)
 
 
 // ==== [ Gripper Pins ] ======================================================
-#define   GRIPPER_SERVO           7
+#define   GRIPPER_SERVO           7   // Servo for front gripper
 
 // ==== [ Led Layout ] ========================================================
 #define   LED_LEFT_BACK           0   // Left Back
@@ -41,13 +40,14 @@ const int RED[]                 = {255, 0, 0};
 const int GREEN[]               = {0, 255, 0};
 const int BLUE[]                = {0, 0, 255};
 const int ORANGE[]              = {255, 80, 0};
+const int WHITE[]               = {255, 255, 255};
 
 // ==== [ Infrared Sensoren ] =================================================
-const int IR_SENSORS[]          = {A7, A6, A5, A4, A3, A2, A1, A0}; // From left to right when looking from the back
+const int IR_SENSORS[]          = {A3, A2, A1, A0}; // From left to right when looking from the back, sensor 1, 3, 6, 8
 
 // ==== [ Array for IrSensor ] ================================================
-int sensorTresholds[8][2];
-bool sensorColor[8];
+int sensorTresholds[4][2];
+bool sensorColor[4];
 
 // ==== [ Wheelcontrol counters]  =============================================
 int pulsesLeft                  = 0;
@@ -58,7 +58,7 @@ Direction driveDirection;
 
 void setup() 
 {
-  Serial.begin(9600);
+  Serial.begin(115200);
   
   // Motor
   pinMode(MOTOR_LEFT_FORWARD, OUTPUT);
@@ -99,8 +99,9 @@ void setup()
 // Enter maze
 void loop() 
 {
-  Serial.println(rotationInDegrees);
-  updateRotation();
+  blinkLed(LED_LEFT_FRONT);
+//  Serial.println(rotationInDegrees);
+//  updateRotation();
 //  readIrOutput();
 
     // if(detectWall())
