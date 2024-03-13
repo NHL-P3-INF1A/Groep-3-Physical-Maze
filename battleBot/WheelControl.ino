@@ -76,3 +76,42 @@ void incrementPulseRight()
 {
   pulsesRight++;
 }
+
+void turnToAngle(double wantedRotation)
+{
+    if(isRightTurnFaster(wantedRotation))
+    {
+      driveRight(255);  
+    }
+    else
+    {
+      driveLeft(255);
+    }
+}
+
+bool isRightTurnFaster(double wantedRotation)
+{
+  double rightDiffrence = wrapAngle(rotationInDegrees - wantedRotation);
+  double leftDiffrence = wrapAngle(wantedRotation - rotationInDegrees);
+  if(rightDiffrence > leftDiffrence)
+  {
+    return false;
+  }
+  else
+  {
+    return true;  
+  }
+}
+
+double wrapAngle(int rotationToWrap)
+{
+  if(rotationToWrap > 360)
+  {
+    rotationToWrap -= 360;  
+  }
+  if(rotationToWrap < 0)
+  {
+    rotationToWrap += 360;  
+  }
+  return rotationToWrap;
+}

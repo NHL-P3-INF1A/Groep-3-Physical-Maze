@@ -7,34 +7,29 @@ void updateRotation()
   lsm6ds3trc.getEvent(&accel, &gyro, &temp);
   static unsigned int timer;
   double interval = 100;
-  double updatesPerSecond = (1000 / interval);
   if(millis() > timer)
   {
-    double rotated = (radiansToDegrees(gyro.gyro.z) / updatesPerSecond);
-    Serial.println(rotated);
-    if (abs(rotated) < 0.2)
+    double rotated = (radiansToDegrees(gyro.gyro.z) / 10);
+    Serial.println(rotationInDegrees);
+    if(abs(rotated) > 0.15)
     {
-      return;  
+      rotationInDegrees += rotated;
+      if(rotationInDegrees > 360)
+      {
+        rotationInDegrees -= 360;  
+      }
+      if(rotationInDegrees < 0)
+      {
+        rotationInDegrees += 360;  
+      }
+      Serial.println(isRightTurnFaster(90));
     }
-    rotationInDegrees += rotated;
+
     timer = millis() + interval;  
   }  
-  rotationInDegrees = wrapDegrees(rotationInDegrees);
 }
 
 double radiansToDegrees(double radians)
 {
   return radians * (180 / PI);
-}
-
-double wrapDegrees(double degrees)
-{
-  if(degrees > 360)
-  {
-    return rotationInDegrees - 360;  
-  }
-  if(rotationInDegrees < 0)
-  {
-    return rotationInDegrees + 360;  
-  }
 }

@@ -58,7 +58,7 @@ Direction driveDirection;
 
 void setup() 
 {
-  Serial.begin(115200);
+  Serial.begin(9600);
   
   // Motor
   pinMode(MOTOR_LEFT_FORWARD, OUTPUT);
@@ -99,48 +99,20 @@ void setup()
 // Enter maze
 void loop() 
 {
-  blinkLed(LED_LEFT_FRONT);
-//  Serial.println(rotationInDegrees);
-//  updateRotation();
-//  readIrOutput();
-
-    // if(detectWall())
-    // {
-    //   driveStop();
-    //   echoSensorLeft();
-    //   if(detectWall())
-    //   {
-    //     echoSensorRight();
-    //     if(detectWall())
-    //     {
-    //       turnBack();
-    //     }
-    //     else
-    //     {
-    //       turnRight();
-    //     }
-    //   }
-    //   else
-    //   {
-    //     turnLeft();
-    //   }
-    // }
-    // else
-    // {
-    //   echoSensorForward();
-    //   driveForward(255);  
-    // }
+  
+  updateRotation();
+  turnToAngle(90);
   
 //  switch(driveDirection)
 //  {
 //    case left: 
-//      blink(ledLeftFront);
+//      blinkLed(LED_LEFT_FRONT);
 //      break;
 //    case right:
-//      blink(ledRightFront);
+//      blinkLed(LED_RIGHT_FRONT);
 //      break;
 //    default:
-//      blink(100);
+//      blinkLed(100);
 //      break;
 //  }
 }
