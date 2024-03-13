@@ -76,3 +76,8 @@ void incrementPulseRight()
 {
   pulsesRight++;
 }
+
+double pulsesToCentimeters(int pulses)
+{
+    return ((pulses / 40) * 6.6 * PI);
+}
