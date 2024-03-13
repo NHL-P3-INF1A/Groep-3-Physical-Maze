@@ -100,6 +100,7 @@ void setup()
 // Enter maze
 void loop()
 {
+  updateRotation();
   switch(driveDirection)
   {
     case left:
