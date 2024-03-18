@@ -101,6 +101,7 @@ void setup()
 void loop()
 {
   updateRotation();
+  turnToAngle(90);
   switch(driveDirection)
   {
     case left:

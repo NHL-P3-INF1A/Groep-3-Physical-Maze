@@ -79,14 +79,25 @@ void incrementPulseRight()
 
 void turnToAngle(double wantedRotation)
 {
-    if(isRightTurnFaster(wantedRotation))
-    {
-      driveRight(255);  
-    }
-    else
-    {
-      driveLeft(255);
-    }
+  int driveSpeed;
+
+  double rotationLeft = abs(wantedRotation - rotationInDegrees);
+  if(rotationLeft < 15)
+  {
+    driveSpeed = 255 * (rotationLeft / 30);
+  }
+  else
+  {
+    driveSpeed = 255;  
+  }
+  if(isRightTurnFaster(wantedRotation))
+  {
+    driveRight(driveSpeed);  
+  }
+  else
+  {
+    driveLeft(driveSpeed);
+  }
 }
 
 bool isRightTurnFaster(double wantedRotation)

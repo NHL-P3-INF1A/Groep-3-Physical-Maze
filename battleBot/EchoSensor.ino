@@ -25,7 +25,7 @@ void checkPassage()
 {
   static int pulseOffset;
 
-  if (distanceFromNextWall = 0)
+  if (distanceFromNextWall == 0)
   {
     echoSensorForward();
     delay(200);
@@ -44,7 +44,7 @@ void checkPassage()
       pulseOffset = pulsesLeft;
       return;
     }
-
+  
     echoSensorRight();
     delay(200);
     if (!detectWall())
@@ -61,10 +61,10 @@ void checkPassage()
     }
   }
 
-    if (!detectWall())
-    {
-      turnLeft();
-      distanceFromNextWall = 0;
-      pulseOffset = pulsesLeft;
-    }
+  if (!detectWall())
+  {
+    turnLeft();
+    distanceFromNextWall = 0;
+    pulseOffset = pulsesLeft;
+  }
 }
