@@ -37,7 +37,7 @@ void gripperUpdate()
 
 void moveGripper(int pulseDuration, int servo)
 {
-  static unsigned int timer;
+  static unsigned long timer;
   static unsigned int pulse1;
   if (pulseDuration > 0)
   {

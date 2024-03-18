@@ -100,8 +100,24 @@ void setup()
 // Enter maze
 void loop()
 {
+  if(millis() < 3000)
+  {
+     turnToAngle(90); 
+  }
+  else if(millis() < 6000)
+  {
+      turnToAngle(180);
+  }
+  else if(millis() < 9000)
+  {
+    turnToAngle(270);
+  }
+  else if(millis() < 12000)
+  {
+    turnToAngle(0);
+  }
   updateRotation();
-  turnToAngle(90);
+  
   switch(driveDirection)
   {
     case left:

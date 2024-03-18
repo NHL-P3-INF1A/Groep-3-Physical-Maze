@@ -13,7 +13,7 @@ void setPixelByName(int pixel, const int color[])
 
 void blinkLed(int pixel)
 {
-  static unsigned int timer;
+  static unsigned long timer;
   static boolean LedState = false;
   if(millis() > timer)
   {
