@@ -23,39 +23,58 @@ double distanceFromObject()
 
 void checkPassage()
 {
-  static int pulseOffset;
+  static long pulseOffset = 0;
 
   if (distanceFromNextWall == 0)
   {
     echoSensorForward();
-    delay(200);
+    delay(1000);
     distanceFromNextWall = distanceFromObject();
     echoSensorLeft();
-    delay(200);
+    delay(1000);
   }
 
-  if ((pulsesToCentimeters((pulsesLeft - pulseOffset)) + 15) >= distanceFromNextWall)
+  if ((pulsesToCentimeters((pulsesLeft - pulseOffset)) + 5) >= distanceFromNextWall)
   {
     driveStop();
     if (!detectWall())
     {
-      turnLeft();
+      while(abs(rotationInDegrees - wantedRotation) <= 3)
+      {
+        turnLeft();
+        updateRotation();
+      }
       distanceFromNextWall = 0;
       pulseOffset = pulsesLeft;
       return;
     }
-  
+    echoSensorForward();
+    delay(1000);
+    if(!detectWall())
+    {
+      distanceFromNextWall = distanceFromObject();
+      return;
+    }
+
     echoSensorRight();
-    delay(200);
+    delay(1000);
     if (!detectWall())
     {
-      turnRight();
+      while(abs(rotationInDegrees - wantedRotation) <= 3)
+      {
+        turnRight();
+        updateRotation();
+      }
       distanceFromNextWall = 0;
       pulseOffset = pulsesLeft;
     }
     else
     {
-      turnBack();
+      while(abs(rotationInDegrees - wantedRotation) <= 3)
+      {
+        turnBack();
+        updateRotation();
+      }
       distanceFromNextWall = 0;
       pulseOffset = pulsesLeft;
     }
@@ -63,7 +82,11 @@ void checkPassage()
 
   if (!detectWall())
   {
-    turnLeft();
+    while(abs(rotationInDegrees - wantedRotation) <= 3)
+    {
+      turnLeft();
+      updateRotation();
+    }
     distanceFromNextWall = 0;
     pulseOffset = pulsesLeft;
   }

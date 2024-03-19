@@ -94,6 +94,15 @@ void setup()
   }
   lsm6ds3trc.configInt1(false, false, true); // accelerometer DRDY on INT1
   lsm6ds3trc.configInt2(false, true, false); // gyro DRDY on INT2
+  lsm6ds3trc.setGyroRange(LSM6DS_GYRO_RANGE_250_DPS);
+  Serial.print("Gyro range set to: ");
+  switch (lsm6ds3trc.getGyroRange()) {
+    case LSM6DS_GYRO_RANGE_125_DPS: Serial.println("125 degrees/s"); break;
+    case LSM6DS_GYRO_RANGE_250_DPS: Serial.println("250 degrees/s"); break;
+    case LSM6DS_GYRO_RANGE_500_DPS: Serial.println("500 degrees/s"); break;
+    case LSM6DS_GYRO_RANGE_1000_DPS: Serial.println("1000 degrees/s"); break;
+    case LSM6DS_GYRO_RANGE_2000_DPS: Serial.println("2000 degrees/s"); break;
+  }
 }
 
 // Await signal
@@ -101,24 +110,8 @@ void setup()
 // Enter maze
 void loop()
 {
-//  if(millis() < 3000)
-//  {
-//     turnToRelativeAxisAngle(90); 
-//  }
-//  else if(millis() < 6000)
-//  {
-//      turnToRelativeAxisAngle(270);
-//  }
-//  else if(millis() < 9000)
-//  {
-//    turnToRelativeAxisAngle(270);
-//  }
-//  else if(millis() < 12000)
-//  {
-//    turnToRelativeAxisAngle(90);
-//  }
-  updateRotation();
-  driveForward(255);
+  Serial.println(rotationInDegrees);
+  checkPassage();
 
   switch(driveDirection)
   {

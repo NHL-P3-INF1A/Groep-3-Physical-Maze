@@ -100,9 +100,9 @@ void turnToAngle(double rotation)
   int driveSpeed;
 
   double rotationLeft = abs(rotation - rotationInDegrees);
-  if(rotationLeft < 15)
+  if(rotationLeft < 5)
   {
-    driveSpeed = 255 * (rotation / 30);
+    driveSpeed = 0;
   }
   else
   {

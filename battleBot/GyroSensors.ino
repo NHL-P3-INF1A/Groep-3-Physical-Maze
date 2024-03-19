@@ -10,6 +10,7 @@ void updateRotation()
   if(millis() > timer)
   {
     double rotated = (radiansToDegrees(gyro.gyro.z) / 10);
+    //Serial.println(rotated);
     if(abs(rotated) >= 0.2)
     {
       rotationInDegrees += rotated;
@@ -29,5 +30,5 @@ void updateRotation()
 
 double radiansToDegrees(double radians)
 {
-  return radians * (180 / PI);
+  return (radians * (180 / PI));
 }
