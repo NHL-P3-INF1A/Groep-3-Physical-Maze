@@ -10,8 +10,7 @@ void updateRotation()
   if(millis() > timer)
   {
     double rotated = (radiansToDegrees(gyro.gyro.z) / 10);
-    Serial.println(rotationInDegrees);
-    if(abs(rotated) > 0.15)
+    if(abs(rotated) >= 0.2)
     {
       rotationInDegrees += rotated;
       if(rotationInDegrees > 360)
@@ -22,7 +21,6 @@ void updateRotation()
       {
         rotationInDegrees += 360;  
       }
-      Serial.println(isRightTurnFaster(90));
     }
 
     timer = millis() + interval;  

@@ -8,7 +8,8 @@ Adafruit_NeoPixel strip(LED_COUNT, LED_PIN, NEO_RGB + NEO_KHZ800);
 #include <Adafruit_LSM6DS3TRC.h>
 Adafruit_LSM6DS3TRC lsm6ds3trc;
 #define PI 3.1415926535897932384626433832795 // Value of Pi
-double rotationInDegrees;
+double rotationInDegrees = 0;
+double wantedRotation = 0;
 
 // ==== [ Motor Pins ] ========================================================
 #define   MOTOR_LEFT_BACK         12  // Motor A1 LB
@@ -100,24 +101,25 @@ void setup()
 // Enter maze
 void loop()
 {
-  if(millis() < 3000)
-  {
-     turnToAngle(90); 
-  }
-  else if(millis() < 6000)
-  {
-      turnToAngle(180);
-  }
-  else if(millis() < 9000)
-  {
-    turnToAngle(270);
-  }
-  else if(millis() < 12000)
-  {
-    turnToAngle(0);
-  }
+//  if(millis() < 3000)
+//  {
+//     turnToRelativeAxisAngle(90); 
+//  }
+//  else if(millis() < 6000)
+//  {
+//      turnToRelativeAxisAngle(270);
+//  }
+//  else if(millis() < 9000)
+//  {
+//    turnToRelativeAxisAngle(270);
+//  }
+//  else if(millis() < 12000)
+//  {
+//    turnToRelativeAxisAngle(90);
+//  }
   updateRotation();
-  
+  driveForward(255);
+
   switch(driveDirection)
   {
     case left:

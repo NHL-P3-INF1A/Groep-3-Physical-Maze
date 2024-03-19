@@ -24,8 +24,21 @@ void driveRight(int speed)
 // ==== [ Drive forwards at 0-255 speed ] =====================================
 void driveForward(int speed)
 {
-  setMotors(speed, 0 , speed, 0);
   driveDirection = forward;
+  if (abs(rotationInDegrees - wantedRotation) > 2)
+  {
+    if (isRightTurnFaster(wantedRotation)) {
+      setMotors(speed, 0, 0, 0);
+    }
+    else
+    {
+      setMotors(0, 0, speed, 0);
+    } 
+  } 
+  else
+  {
+    setMotors(speed, 0, speed, 0);
+  }
 }
 
 // ==== [ Drive backwards at 0-255 speed ] ====================================
@@ -44,27 +57,17 @@ void driveStop()
 
 void turnLeft()
 {
-  driveLeft(255);
-  setPixelByName(LED_LEFT_FRONT, ORANGE);
-  delay(380);
-  driveStop();
-  setPixelRgb(LED_LEFT_FRONT, 255, 255, 255);
+  turnToRelativeAxisAngle(90);
 }
 
 void turnRight()
 {
-  driveRight(255);
-  setPixelByName(LED_RIGHT_FRONT, ORANGE);
-  delay(380);
-  driveStop();
-  setPixelRgb(LED_RIGHT_FRONT, 255, 255, 255);
+  turnToRelativeAxisAngle(270);
 }
 
 void turnBack()
 {
-  driveLeft(255);
-  delay(760);
-  driveStop();
+  turnToRelativeAxisAngle(180);
 }
 
 void incrementPulseLeft()
@@ -77,20 +80,35 @@ void incrementPulseRight()
   pulsesRight++;
 }
 
-void turnToAngle(double wantedRotation)
+void turnToRelativeAxisAngle(double relativeRotation)
+{ 
+  static int angleToTurnTo;
+  if (relativeRotation != wantedRotation)
+  {
+     wantedRotation = relativeRotation;
+     angleToTurnTo = (int)(round(wrapAngle((rotationInDegrees + wantedRotation) / 90) * 90));
+  }
+  if(wantedRotation == 0)
+  {
+    return;
+  }
+  turnToAngle(angleToTurnTo);
+}
+
+void turnToAngle(double rotation)
 {
   int driveSpeed;
 
-  double rotationLeft = abs(wantedRotation - rotationInDegrees);
+  double rotationLeft = abs(rotation - rotationInDegrees);
   if(rotationLeft < 15)
   {
-    driveSpeed = 255 * (rotationLeft / 30);
+    driveSpeed = 255 * (rotation / 30);
   }
   else
   {
     driveSpeed = 255;  
   }
-  if(isRightTurnFaster(wantedRotation))
+  if(isRightTurnFaster(rotation))
   {
     driveRight(driveSpeed);  
   }
@@ -100,10 +118,10 @@ void turnToAngle(double wantedRotation)
   }
 }
 
-bool isRightTurnFaster(double wantedRotation)
+bool isRightTurnFaster(double rotation)
 {
-  double rightDiffrence = wrapAngle(rotationInDegrees - wantedRotation);
-  double leftDiffrence = wrapAngle(wantedRotation - rotationInDegrees);
+  double rightDiffrence = wrapAngle(rotationInDegrees - rotation);
+  double leftDiffrence = wrapAngle(rotation - rotationInDegrees);
   if(rightDiffrence > leftDiffrence)
   {
     return false;
