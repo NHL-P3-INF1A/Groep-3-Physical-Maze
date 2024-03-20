@@ -24,8 +24,8 @@ double wantedRotation = 0;
 #define   ECHO_SERVO              5   // Servo for echo sensor rotation
 #define   ECHO_READ               9   // Echo
 #define   ECHO_SEND               4   // Trigger
-#define   STOP_DISTANCE           10  // Distance threshold to stop the robot (in cm)
-double    distanceFromNextWall  = 0;
+#define   STOP_DISTANCE           15  // Distance threshold to stop the robot (in cm)
+double    distanceFromNextWall  = -1;
 
 
 // ==== [ Gripper Pins ] ======================================================
@@ -52,8 +52,9 @@ int sensorTresholds[4][2];
 bool sensorColor[4];
 
 // ==== [ Wheelcontrol counters]  =============================================
-int pulsesLeft                  = 0;
-int pulsesRight                 = 0;
+long pulsesLeft                 = 0;
+long pulsesRight                = 0;
+long pulseOffset                = 0;
 
 enum Direction {forward, right, left, backwards, none};
 Direction driveDirection;
@@ -110,9 +111,14 @@ void setup()
 // Enter maze
 void loop()
 {
+  // DO NOT REMOVE
+  updateRotation();
+  //
+  
   Serial.println(rotationInDegrees);
-  checkPassage();
-
+  //smartForward();
+  driveForward(255);
+  
   switch(driveDirection)
   {
     case left:
