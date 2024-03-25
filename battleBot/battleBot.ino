@@ -57,7 +57,9 @@ long pulsesRight                = 0;
 long pulseOffset                = 0;
 
 enum Direction {forward, right, left, backwards, none};
+enum Action {drivingForward, checkingForward, checkingLeft, turningLeft, turningBack, checkingRight, turningRight};
 Direction driveDirection;
+Action currentAction;
 
 void setup()
 {
@@ -118,6 +120,48 @@ void loop()
   Serial.println(rotationInDegrees);
   //smartForward();
   driveForward(255);
+
+  switch(currentAction)
+  {
+    case drivingForward: // Drive forward and check the left side
+          // Rij vooruit, check linker muur, // houd bij of je de muur bereikt of niet
+            // Bereik je de muur: currentAction = checkingForward;
+            // Gat in linker muur: currentAction = turningLeft;
+      break;
+    case checkingForward: // Check if the car can still drive forward more
+      // Check vooruit:
+        // Kan vooruit: currentAction = drivingForward;
+        // Anders: CheckingLeft
+      break;
+    case checkingLeft: // Check if the car can go left
+        // Check links
+          // Kan links: currentAction = turningLeft;
+          // Anders: currentAction = checkingRight;
+      break;
+    case checkingRight: // Check if the car can go right
+        // Check rechts
+          // Kan rechts: currentAction = turningRight;
+          // Anders: currentAction = turningBack;
+      break;
+    case turningLeft: // Turn left
+      if(turnLeft())
+      {
+        currentAction = checkingForward();  
+      }
+      break;
+    case turningBack: // Turn around
+      if(turnBack())
+      {
+        currentAction = checkingForward();  
+      }
+      break;
+    case turningRight:  // Turn right
+      if(turnRight())
+      {
+        currentAction = checkingForward();
+      }
+      break;
+  }
   
   switch(driveDirection)
   {

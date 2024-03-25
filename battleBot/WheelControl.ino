@@ -58,19 +58,19 @@ void driveStop()
   driveDirection = none;
 }
 
-void turnLeft()
+boolean turnLeft()
 {
-  turnToRelativeAxisAngle(90);
+  return turnToRelativeAxisAngle(90);
 }
 
-void turnRight()
+boolean turnRight()
 {
-  turnToRelativeAxisAngle(270);
+  return turnToRelativeAxisAngle(270);
 }
 
-void turnBack()
+boolean turnBack()
 {
-  turnToRelativeAxisAngle(180);
+  return turnToRelativeAxisAngle(180);
 }
 
 void incrementPulseLeft()
@@ -83,7 +83,7 @@ void incrementPulseRight()
   pulsesRight++;
 }
 
-void turnToRelativeAxisAngle(double relativeRotation)
+boolean turnToRelativeAxisAngle(double relativeRotation)
 { 
   static int angleToTurnTo;
   if (relativeRotation != wantedRotation)
@@ -91,11 +91,12 @@ void turnToRelativeAxisAngle(double relativeRotation)
      wantedRotation = relativeRotation;
      angleToTurnTo = (int)(round(wrapAngle((rotationInDegrees + wantedRotation) / 90) * 90));
   }
-  if(wantedRotation == 0)
-  {
-    return;
-  }
   turnToAngle(angleToTurnTo);
+  if(abs(rotationInDegrees - wantedRotation) <= 3)
+  {
+    return true;
+  }
+  return false;
 }
 
 void turnToAngle(double rotation)
