@@ -2,52 +2,75 @@
 #define ECHO_SENSOR_RIGHT 500
 #define ECHO_SENSOR_LEFT 2500
 
-#define GRIPPER_OPEN 1600
+#define GRIPPER_OPEN 1500
 #define GRIPPER_CLOSE 1000
 
 void echoSensorForward()
 {
-  moveGripper(ECHO_SENSOR_FORWARD, ECHO_SERVO);
+  moveEchoSensor(ECHO_SENSOR_FORWARD);
 }
 
 void echoSensorLeft()
 {
-  moveGripper(ECHO_SENSOR_LEFT, ECHO_SERVO);
+  moveEchoSensor(ECHO_SENSOR_LEFT);
 }
 
 void echoSensorRight()
 {
-  moveGripper(ECHO_SENSOR_RIGHT, ECHO_SERVO);
+  moveEchoSensor(ECHO_SENSOR_RIGHT);
 }
 
 void gripperOpen()
 {
-  moveGripper(GRIPPER_OPEN, GRIPPER_SERVO);
+  moveGripper(GRIPPER_OPEN);
 }
 
 void gripperClose()
 {
-  moveGripper(GRIPPER_CLOSE, GRIPPER_SERVO);
+  moveGripper(GRIPPER_CLOSE);
 }
 
 void gripperUpdate()
 {
-  moveGripper(0, GRIPPER_SERVO);
+  moveGripper(0);
+  Serial.println("Still alive boi");
 }
 
-void moveGripper(int pulseDuration, int servo)
+void echoSensorUpdate()
+{
+  moveEchoSensor(0);
+}
+
+void moveGripper(int pulseDuration)
 {
   static unsigned long timer;
-  static unsigned int pulse1;
+  static unsigned int pulse1 = 1500;
   if (pulseDuration > 0)
   {
     pulse1 = pulseDuration;
   }
   if(millis() > timer)
   {
-    digitalWrite(servo, HIGH);
+    digitalWrite(GRIPPER_SERVO, HIGH);
     delayMicroseconds(pulse1);
-    digitalWrite(servo, LOW);
+    digitalWrite(GRIPPER_SERVO, LOW);
+    timer = millis() + 20;
+  }
+}
+
+void moveEchoSensor(int pulseDuration)
+{
+  static unsigned long timer;
+  static unsigned int pulse1 = 1500;
+  if (pulseDuration > 0)
+  {
+    pulse1 = pulseDuration;
+  }
+  if(millis() > timer)
+  {
+    digitalWrite(ECHO_SERVO, HIGH);
+    delayMicroseconds(pulse1);
+    digitalWrite(ECHO_SERVO, LOW);
     timer = millis() + 20;
   }
 }

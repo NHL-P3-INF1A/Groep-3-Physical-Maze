@@ -29,18 +29,15 @@ void driveForward(int speed)
   {
     if (isRightTurnFaster(wantedRotation)) {
       setMotors(speed, 0, speed - 100, 0);
-      Serial.println("Go right");
     }
     else
     {
       setMotors(speed - 100, 0, speed, 0);
-      Serial.println("Go left");
     } 
   } 
   else
   {
     setMotors(speed, 0, speed, 0);
-    Serial.println("Go forward");
   }
 }
 

@@ -106,6 +106,9 @@ void setup()
     case LSM6DS_GYRO_RANGE_1000_DPS: Serial.println("1000 degrees/s"); break;
     case LSM6DS_GYRO_RANGE_2000_DPS: Serial.println("2000 degrees/s"); break;
   }
+  echoSensorForward();
+  gripperClose();
+  currentAction = checkingForward;
 }
 
 // Await signal
@@ -114,65 +117,174 @@ void setup()
 void loop()
 {
   // DO NOT REMOVE
-  updateRotation();
-  //
-  
-  Serial.println(rotationInDegrees);
-  //smartForward();
-  driveForward(255);
-
+//  updateRotation();
+//  gripperUpdate();
+//  echoSensorUpdate();
+  Serial.println(currentAction);
+  //TODO make the thingy wait before it is fully rotated
   switch(currentAction)
   {
     case drivingForward: // Drive forward and check the left side
-          // Rij vooruit, check linker muur, // houd bij of je de muur bereikt of niet
+      Serial.println("Driving forward");
+      driveForward(255);
+      echoSensorLeft();
+      if (hasReachedWall())
+      {
+        currentAction = checkingForward;
+      }
+      if (!detectWall())
+      {
+        currentAction = turningLeft;
+      }
             // Bereik je de muur: currentAction = checkingForward;
             // Gat in linker muur: currentAction = turningLeft;
       break;
     case checkingForward: // Check if the car can still drive forward more
-      // Check vooruit:
+      Serial.println("Checking forward");
+      if (!checkFrontWall())
+      {
+        setNewNextWall();
+        currentAction = drivingForward;
+      }
+      else
+      {
+        driveStop();
+        currentAction = checkingLeft; 
+      }
         // Kan vooruit: currentAction = drivingForward;
         // Anders: CheckingLeft
       break;
     case checkingLeft: // Check if the car can go left
+      Serial.println("Checking left");
+      driveStop();
+      if(!checkLeftWall())
+      {
+        currentAction = turningLeft;
+      }
         // Check links
           // Kan links: currentAction = turningLeft;
           // Anders: currentAction = checkingRight;
       break;
     case checkingRight: // Check if the car can go right
+      Serial.println("Checking right");
+      driveStop();
+      if(!checkRightWall())
+      {
+        currentAction = turningRight;
+      }
+      else
+      {
+        currentAction = turningBack;
+      }
         // Check rechts
           // Kan rechts: currentAction = turningRight;
           // Anders: currentAction = turningBack;
       break;
     case turningLeft: // Turn left
+      Serial.println("Turning left");
       if(turnLeft())
       {
-        currentAction = checkingForward();  
+        currentAction = checkingForward;  
       }
       break;
     case turningBack: // Turn around
+      Serial.println("Turning back");
       if(turnBack())
       {
-        currentAction = checkingForward();  
+        currentAction = checkingForward;  
       }
       break;
     case turningRight:  // Turn right
+      Serial.println("Turning right");
       if(turnRight())
       {
-        currentAction = checkingForward();
+        currentAction = checkingForward;
       }
+      break;
+    default:
+      Serial.println("J mdr");
       break;
   }
   
-  switch(driveDirection)
+//  switch(driveDirection)
+//  {
+//    case left:
+//      blinkLed(LED_LEFT_FRONT);
+//      break;
+//    case right:
+//      blinkLed(LED_RIGHT_FRONT);
+//      break;
+//    default:
+//      blinkLed(100);
+//      break;
+//  }
+}
+
+// ==== [ Check for walls ] ===================================================
+void setNewNextWall()
+{
+  long turnTime = millis() + 400;
+  echoSensorForward();
+  while (turnTime <= millis())
   {
-    case left:
-      blinkLed(LED_LEFT_FRONT);
-      break;
-    case right:
-      blinkLed(LED_RIGHT_FRONT);
-      break;
-    default:
-      blinkLed(100);
-      break;
+    echoSensorUpdate();
   }
+  distanceFromNextWall = distanceFromObject();
+}
+
+boolean hasReachedWall()
+{
+  if((pulsesToCentimeters((pulsesLeft - pulseOffset)) + 5) >= distanceFromNextWall)
+  {
+    pulseOffset = pulsesLeft;
+    currentAction = checkingForward;
+    return true;
+  }
+  return false;
+}
+
+// ==== [ Look arround functions ] ============================================
+boolean checkLeftWall()
+{
+  long turnTime = millis() + 400;
+  echoSensorLeft();
+  while (turnTime <= millis())
+  {
+    echoSensorUpdate();
+  }
+  if (detectWall())
+  {
+    return true;
+  }
+  return false;
+}
+
+boolean checkRightWall()
+{
+  long turnTime = millis() + 400;
+  echoSensorRight();
+  while (turnTime <= millis())
+  {
+    echoSensorUpdate();
+  }
+  if (detectWall())
+  {
+    return true;
+  }
+  return false;
+}
+
+boolean checkFrontWall()
+{
+  long turnTime = millis() + 400;
+  echoSensorForward();
+  while (turnTime <= millis())
+  {
+    echoSensorUpdate();
+  }
+  if (detectWall())
+  {
+    return true;
+  }
+  return false;
 }
