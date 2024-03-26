@@ -97,7 +97,7 @@ void setup()
   }
   lsm6ds3trc.configInt1(false, false, true); // accelerometer DRDY on INT1
   lsm6ds3trc.configInt2(false, true, false); // gyro DRDY on INT2
-  lsm6ds3trc.setGyroRange(LSM6DS_GYRO_RANGE_250_DPS);
+  lsm6ds3trc.setGyroRange(LSM6DS_GYRO_RANGE_1000_DPS);
   Serial.print("Gyro range set to: ");
   switch (lsm6ds3trc.getGyroRange()) {
     case LSM6DS_GYRO_RANGE_125_DPS: Serial.println("125 degrees/s"); break;
@@ -116,12 +116,16 @@ void setup()
 // Enter maze
 void loop()
 {
+  //init timer
+  static long timer = millis() + 400;
   // DO NOT REMOVE
-//  updateRotation();
-//  gripperUpdate();
-//  echoSensorUpdate();
-  Serial.println(currentAction);
+  updateRotation();
+  gripperUpdate();
+  turnLeft();
+  delay(2000);
   //TODO make the thingy wait before it is fully rotated
+
+  /*
   switch(currentAction)
   {
     case drivingForward: // Drive forward and check the left side
@@ -132,7 +136,7 @@ void loop()
       {
         currentAction = checkingForward;
       }
-      if (!detectWall())
+      if (!detectWall() && millis() >= timer)
       {
         currentAction = turningLeft;
       }
@@ -141,10 +145,13 @@ void loop()
       break;
     case checkingForward: // Check if the car can still drive forward more
       Serial.println("Checking forward");
+      echoSensorForward();
+      delay(400);
       if (!checkFrontWall())
       {
         setNewNextWall();
         currentAction = drivingForward;
+        timer = millis() + 400;
       }
       else
       {
@@ -202,7 +209,7 @@ void loop()
       }
       break;
     default:
-      Serial.println("J mdr");
+      currentAction = checkingForward;
       break;
   }
   
@@ -218,6 +225,7 @@ void loop()
 //      blinkLed(100);
 //      break;
 //  }
+  */
 }
 
 // ==== [ Check for walls ] ===================================================

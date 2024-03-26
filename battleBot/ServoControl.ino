@@ -33,7 +33,6 @@ void gripperClose()
 void gripperUpdate()
 {
   moveGripper(0);
-  Serial.println("Still alive boi");
 }
 
 void echoSensorUpdate()

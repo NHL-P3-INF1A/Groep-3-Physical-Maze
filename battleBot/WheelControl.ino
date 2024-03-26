@@ -57,17 +57,19 @@ void driveStop()
 
 boolean turnLeft()
 {
-  return turnToRelativeAxisAngle(90);
+  turnToRelativeAxisAngle(1);
+  while(turnToRelativeAxisAngle(0));
+  return true;
 }
 
 boolean turnRight()
 {
-  return turnToRelativeAxisAngle(270);
+  return turnToRelativeAxisAngle(2);
 }
 
 boolean turnBack()
 {
-  return turnToRelativeAxisAngle(180);
+  return turnToRelativeAxisAngle(3);
 }
 
 void incrementPulseLeft()
@@ -80,6 +82,7 @@ void incrementPulseRight()
   pulsesRight++;
 }
 
+/*
 boolean turnToRelativeAxisAngle(double relativeRotation)
 { 
   static int angleToTurnTo;
@@ -95,28 +98,96 @@ boolean turnToRelativeAxisAngle(double relativeRotation)
   }
   return false;
 }
+*/
+
+boolean turnToRelativeAxisAngle(int relativeRotation)
+{
+  static int rotationOffset = rotationInDegrees;
+  static int angleToTurnTo;
+  static boolean isAtRotation = true;
+  
+  /*
+   * 1 = to the left
+   * 2 = to the right
+   * 3 = 180 turn
+   */
+   
+  switch(relativeRotation)
+  {
+    case 1:
+      // Rotate 90 degrees compared to the current offset
+      rotationOffset = wrapAngle(rotationOffset + 90);
+      isAtRotation = false;
+      break;
+    case 2:
+      // Rotate -90 degrees compared to the current offset
+      rotationOffset = wrapAngle(rotationOffset - 90);
+      isAtRotation = false;
+      break;
+    case 3:
+      // Rotate 180 degrees compared to the current offset
+      rotationOffset = wrapAngle(rotationOffset + 180);
+      isAtRotation = false;
+      break;
+    case 0:
+    default:
+      Serial.println("Looping current rotation");
+      // Keep looping current wanted rotation untill it has been reached
+        updateRotation();
+        turnToAngle(rotationOffset);
+        if (abs(rotationInDegrees - rotationOffset) <= 5)
+        { 
+          Serial.println("HE BE STOPPIN'N");
+          // If the rotation is within 5 degrees of the wanted rotation, assume it has arrived at destination
+          isAtRotation = true;
+        }
+        if (!isAtRotation)
+        {
+          return true;
+        }
+        else
+        {
+          return false; 
+        }
+      break;
+  }
+}
 
 void turnToAngle(double rotation)
 {
   int driveSpeed;
+  int rotationLeft = rotation - rotationInDegrees;  
+  if(rotationLeft > 60)
+  {
+    driveSpeed = 200;  
+  }
+  else if (rotationLeft > 30)
+  {
+    driveSpeed = 180;
+  }
+  else if (rotationLeft > -30)
+  {
+    driveSpeed = 150;
+  }
+  else if (rotationLeft > -60)
+  {
+    driveSpeed = 180;
+  }
+  else
+  {
+    driveSpeed = 200;
+  }
+  if(rotationLeft < -90)
+  {
+      driveRight(driveSpeed);
+  }
+  else
+  {
+      driveLeft(driveSpeed);
+  }
+  Serial.println(rotationLeft);
+  
 
-  double rotationLeft = abs(rotation - rotationInDegrees);
-  if(rotationLeft < 5)
-  {
-    driveSpeed = 0;
-  }
-  else
-  {
-    driveSpeed = 255;  
-  }
-  if(isRightTurnFaster(rotation))
-  {
-    driveRight(driveSpeed);  
-  }
-  else
-  {
-    driveLeft(driveSpeed);
-  }
 }
 
 bool isRightTurnFaster(double rotation)
