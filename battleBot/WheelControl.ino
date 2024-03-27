@@ -57,12 +57,12 @@ void driveStop()
 
 boolean turnLeft()
 {
-  driveLeft();
+  driveLeft(255);
 }
 
 boolean turnBack()
 {
-  driveRight();
+  driveRight(255);
 }
 
 void incrementPulseLeft()

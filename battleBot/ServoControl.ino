@@ -16,11 +16,6 @@ void gripperUpdate()
   moveGripper(0);
 }
 
-void echoSensorUpdate()
-{
-  moveEchoSensor(0);
-}
-
 void moveGripper(int pulseDuration)
 {
   static unsigned long timer;

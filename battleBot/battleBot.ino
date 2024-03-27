@@ -65,8 +65,10 @@ void setup()
   attachInterrupt(digitalPinToInterrupt(MOTOR_LEFT_READ), incrementPulseLeft, CHANGE);
 
   // Echo Sensor
-  pinMode(ECHO_READ, INPUT);
-  pinMode(ECHO_SEND, OUTPUT);
+  pinMode(ECHO_FORWARD[0], INPUT);
+  pinMode(ECHO_FORWARD[1], OUTPUT);
+  pinMode(ECHO_LEFT[0], INPUT);
+  pinMode(ECHO_LEFT[1], OUTPUT);
 
   // IR Sensoren
   for(int element : IR_SENSORS)
@@ -80,28 +82,9 @@ void setup()
   setPixelRgb(LED_RIGHT_FRONT, 255, 255, 255);
   setPixelRgb(LED_LEFT_BACK, 128, 0, 0);
   setPixelRgb(LED_RIGHT_BACK, 128, 0, 0);
-
-  // Check if gyro sensor chip works
-  if (!lsm6ds3trc.begin_I2C())
-  {
-    Serial.println("Failed to find LSM6DS3TR-C chip");
-  }
-  lsm6ds3trc.configInt1(false, false, true); // accelerometer DRDY on INT1
-  lsm6ds3trc.configInt2(false, true, false); // gyro DRDY on INT2
-  lsm6ds3trc.setGyroRange(LSM6DS_GYRO_RANGE_125_DPS);
-  Serial.print("Gyro range set to: ");
-  switch (lsm6ds3trc.getGyroRange()) {
-    case LSM6DS_GYRO_RANGE_125_DPS: Serial.println("125 degrees/s"); break;
-    case LSM6DS_GYRO_RANGE_250_DPS: Serial.println("250 degrees/s"); break;
-    case LSM6DS_GYRO_RANGE_500_DPS: Serial.println("500 degrees/s"); break;
-    case LSM6DS_GYRO_RANGE_1000_DPS: Serial.println("1000 degrees/s"); break;
-    case LSM6DS_GYRO_RANGE_2000_DPS: Serial.println("2000 degrees/s"); break;
-  }
-  echoSensorForward();
-  gripperClose();
-  currentAction = checkingForward;
   
-  Serial.println("Finished");
+  gripperClose();
+  currentAction = drivingForward;
 }
 
 // Await signal
@@ -109,19 +92,23 @@ void setup()
 // Enter maze
 void loop()
 {
-  //init timer
-  static long timer = millis() + 400;
-  // DO NOT REMOVE
-  updateRotation();
   gripperUpdate();
-  //TODO make the thingy wait before it is fully rotated
-
-//  switch(currentAction)
-//  {
-//    case drivingForward: 
-//    case turningBack:
-//    case unstuck:
-//  }
+ 
+  switch(currentAction)
+  {
+    case drivingForward: 
+      break;
+    case turningBack:
+      if(turnBack())
+      {
+          
+      }
+      break;
+    case unstuck:
+      break;
+//    default:
+//      currentAction = drivingForward;
+  }
 
   
   /*
@@ -228,70 +215,70 @@ void loop()
 }
 
 // ==== [ Check for walls ] ===================================================
-void setNewNextWall()
-{
-  long turnTime = millis() + 400;
-  echoSensorForward();
-  while (turnTime <= millis())
-  {
-    echoSensorUpdate();
-  }
-  distanceFromNextWall = distanceFromObject();
-}
-
-boolean hasReachedWall()
-{
-  if((pulsesToCentimeters((pulsesLeft - pulseOffset)) + 5) >= distanceFromNextWall)
-  {
-    pulseOffset = pulsesLeft;
-    currentAction = checkingForward;
-    return true;
-  }
-  return false;
-}
+//void setNewNextWall()
+//{
+//  long turnTime = millis() + 400;
+//  echoSensorForward();
+//  while (turnTime <= millis())
+//  {
+//    echoSensorUpdate();
+//  }
+//  distanceFromNextWall = distanceFromObject();
+//}
+//
+//boolean hasReachedWall()
+//{
+//  if((pulsesToCentimeters((pulsesLeft - pulseOffset)) + 5) >= distanceFromNextWall)
+//  {
+//    pulseOffset = pulsesLeft;
+//    currentAction = checkingForward;
+//    return true;
+//  }
+//  return false;
+//}
 
 // ==== [ Look arround functions ] ============================================
-boolean checkLeftWall()
-{
-  long turnTime = millis() + 400;
-  echoSensorLeft();
-  while (turnTime <= millis())
-  {
-    echoSensorUpdate();
-  }
-  if (detectWall())
-  {
-    return true;
-  }
-  return false;
-}
-
-boolean checkRightWall()
-{
-  long turnTime = millis() + 400;
-  echoSensorRight();
-  while (turnTime <= millis())
-  {
-    echoSensorUpdate();
-  }
-  if (detectWall())
-  {
-    return true;
-  }
-  return false;
-}
-
-boolean checkFrontWall()
-{
-  long turnTime = millis() + 400;
-  echoSensorForward();
-  while (turnTime <= millis())
-  {
-    echoSensorUpdate();
-  }
-  if (detectWall())
-  {
-    return true;
-  }
-  return false;
-}
+//boolean checkLeftWall()
+//{
+//  long turnTime = millis() + 400;
+//  echoSensorLeft();
+//  while (turnTime <= millis())
+//  {
+//    echoSensorUpdate();
+//  }
+//  if (detectWall())
+//  {
+//    return true;
+//  }
+//  return false;
+//}
+//
+//boolean checkRightWall()
+//{
+//  long turnTime = millis() + 400;
+//  echoSensorRight();
+//  while (turnTime <= millis())
+//  {
+//    echoSensorUpdate();
+//  }
+//  if (detectWall())
+//  {
+//    return true;
+//  }
+//  return false;
+//}
+//
+//boolean checkFrontWall()
+//{
+//  long turnTime = millis() + 400;
+//  echoSensorForward();
+//  while (turnTime <= millis())
+//  {
+//    echoSensorUpdate();
+//  }
+//  if (detectWall())
+//  {
+//    return true;
+//  }
+//  return false;
+//}

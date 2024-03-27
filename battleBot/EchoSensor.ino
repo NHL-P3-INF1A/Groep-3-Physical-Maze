@@ -4,10 +4,10 @@ bool detectWall(int sensor)
   return (distanceFromObject(sensor) <= STOP_DISTANCE) ? true : false;
 }
 
-double distanceFromObject(int sensor)
+double distanceFromObject(int sensor[])
 {
-  echoRead = sensor[0];
-  echoSend = sensor[1];
+  int echoRead = sensor[0];
+  int echoSend = sensor[1];
   digitalWrite(echoSend, LOW);
   delayMicroseconds(2);
   digitalWrite(echoSend, HIGH);
