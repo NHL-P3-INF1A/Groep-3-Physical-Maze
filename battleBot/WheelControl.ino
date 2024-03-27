@@ -25,15 +25,13 @@ void driveRight(int speed)
 void driveForward(int speed)
 {
   driveDirection = forward;
-  double distanceFromWall = distanceFromObject(ECHO_LEFT);
-  if(distanceFromWall > WALLHUG_DISTANCE + 1)
+  if(detectWall(ECHO_LEFT, WALLHUG_DISTANCE + 1))
   {
-    setMotors(speed, 0, speed - 100, 0);
-    
+    setMotors(speed, 0, 0, 0); // speed - 100
   }
-  else if(distanceFromWall < WALLHUG_DISTANCE - 1)
+  else if(ECHO_LEFT, WALLHUG_DISTANCE - 1)
   {
-    setMotors(speed - 100, 0, speed, 0);
+    setMotors(0, 0, speed, 0); 
   }
   else
   {
@@ -60,7 +58,7 @@ boolean turnLeft()
   driveLeft(255);
 }
 
-boolean turnBack()
+boolean turnRight()
 {
   driveRight(255);
 }

@@ -15,9 +15,8 @@ Adafruit_NeoPixel strip(LED_COUNT, LED_PIN, NEO_RGB + NEO_KHZ800);
 // ==== [ Echo Sensor Pins ] ==================================================
 const int ECHO_FORWARD[]        = {9, 4}; // {Echo Read, Echo Send}
 const int ECHO_LEFT[]           = {5, 13};
-#define   STOP_DISTANCE           15  // Distance threshold to stop the robot (in cm)
-#define   WALLHUG_DISTANCE        10  // Distance from the left wall
-
+#define   STOP_DISTANCE           10  // Distance threshold to stop the robot (in cm)
+#define   WALLHUG_DISTANCE        8  // Distance from the left wall
 
 // ==== [ Gripper Pins ] ======================================================
 #define   GRIPPER_SERVO           7   // Servo for front gripper
@@ -49,7 +48,7 @@ long pulsesRight                = 0;
 long pulseOffset                = 0;
 
 enum Direction {forward, right, left, backwards, none};
-enum Action {drivingForward, turningBack, unstuck};
+enum Action {drivingForward, turningRight, unstuck};
 Direction driveDirection;
 Action currentAction;
 
@@ -93,192 +92,45 @@ void setup()
 void loop()
 {
   gripperUpdate();
+//
  
   switch(currentAction)
   {
     case drivingForward: 
-      break;
-    case turningBack:
-      if(turnBack())
-      {
-          
-      }
-      break;
-    case unstuck:
-      break;
-//    default:
-//      currentAction = drivingForward;
-  }
-
-  
-  /*
-  switch(currentAction)
-  {
-    case drivingForward: // Drive forward and check the left side
-      Serial.println("Driving forward");
-      driveForward(255);
-      echoSensorLeft();
-      if (hasReachedWall())
-      {
-        currentAction = checkingForward;
-      }
-      if (!detectWall() && millis() >= timer)
-      {
-        currentAction = turningLeft;
-      }
-            // Bereik je de muur: currentAction = checkingForward;
-            // Gat in linker muur: currentAction = turningLeft;
-      break;
-    case checkingForward: // Check if the car can still drive forward more
-      Serial.println("Checking forward");
-      echoSensorForward();
-      delay(400);
-      if (!checkFrontWall())
-      {
-        setNewNextWall();
-        currentAction = drivingForward;
-        timer = millis() + 400;
-      }
-      else
-      {
-        driveStop();
-        currentAction = checkingLeft; 
-      }
-        // Kan vooruit: currentAction = drivingForward;
-        // Anders: CheckingLeft
-      break;
-    case checkingLeft: // Check if the car can go left
-      Serial.println("Checking left");
-      driveStop();
-      if(!checkLeftWall())
-      {
-        currentAction = turningLeft;
-      }
-        // Check links
-          // Kan links: currentAction = turningLeft;
-          // Anders: currentAction = checkingRight;
-      break;
-    case checkingRight: // Check if the car can go right
-      Serial.println("Checking right");
-      driveStop();
-      if(!checkRightWall())
+      if(detectWall(ECHO_FORWARD, STOP_DISTANCE))
       {
         currentAction = turningRight;
       }
+      driveForward(255);
+      break;
+    case turningRight:
+      if(!detectWall(ECHO_FORWARD, STOP_DISTANCE + 10))
+      {
+        driveStop();
+        currentAction = drivingForward;
+      }
       else
       {
-        currentAction = turningBack;
-      }
-        // Check rechts
-          // Kan rechts: currentAction = turningRight;
-          // Anders: currentAction = turningBack;
-      break;
-    case turningLeft: // Turn left
-      Serial.println("Turning left");
-      if(turnLeft())
-      {
-        currentAction = checkingForward;  
+        turnRight();  
       }
       break;
-    case turningBack: // Turn around
-      Serial.println("Turning back");
-      if(turnBack())
-      {
-        currentAction = checkingForward;  
-      }
-      break;
-    case turningRight:  // Turn right
-      Serial.println("Turning right");
-      if(turnRight())
-      {
-        currentAction = checkingForward;
-      }
+    case unstuck:
+      // TODO: drive backwards when stuck
       break;
     default:
-      currentAction = checkingForward;
-      break;
+      currentAction = drivingForward;
   }
   
-//  switch(driveDirection)
-//  {
-//    case left:
-//      blinkLed(LED_LEFT_FRONT);
-//      break;
-//    case right:
-//      blinkLed(LED_RIGHT_FRONT);
-//      break;
-//    default:
-//      blinkLed(100);
-//      break;
-//  }
-  */
+  switch(driveDirection)
+  {
+    case left:
+      blinkLed(LED_LEFT_FRONT);
+      break;
+    case right:
+      blinkLed(LED_RIGHT_FRONT);
+      break;
+    default:
+      blinkLed(100);
+      break;
+  }
 }
-
-// ==== [ Check for walls ] ===================================================
-//void setNewNextWall()
-//{
-//  long turnTime = millis() + 400;
-//  echoSensorForward();
-//  while (turnTime <= millis())
-//  {
-//    echoSensorUpdate();
-//  }
-//  distanceFromNextWall = distanceFromObject();
-//}
-//
-//boolean hasReachedWall()
-//{
-//  if((pulsesToCentimeters((pulsesLeft - pulseOffset)) + 5) >= distanceFromNextWall)
-//  {
-//    pulseOffset = pulsesLeft;
-//    currentAction = checkingForward;
-//    return true;
-//  }
-//  return false;
-//}
-
-// ==== [ Look arround functions ] ============================================
-//boolean checkLeftWall()
-//{
-//  long turnTime = millis() + 400;
-//  echoSensorLeft();
-//  while (turnTime <= millis())
-//  {
-//    echoSensorUpdate();
-//  }
-//  if (detectWall())
-//  {
-//    return true;
-//  }
-//  return false;
-//}
-//
-//boolean checkRightWall()
-//{
-//  long turnTime = millis() + 400;
-//  echoSensorRight();
-//  while (turnTime <= millis())
-//  {
-//    echoSensorUpdate();
-//  }
-//  if (detectWall())
-//  {
-//    return true;
-//  }
-//  return false;
-//}
-//
-//boolean checkFrontWall()
-//{
-//  long turnTime = millis() + 400;
-//  echoSensorForward();
-//  while (turnTime <= millis())
-//  {
-//    echoSensorUpdate();
-//  }
-//  if (detectWall())
-//  {
-//    return true;
-//  }
-//  return false;
-//}
