@@ -1,15 +1,17 @@
-bool detectWall()
+bool detectWall(int sensor)
 {
   // Stop if distance is less than or equal to stopDistance
-  return (distanceFromObject() <= STOP_DISTANCE) ? true : false;
+  return (distanceFromObject(sensor) <= STOP_DISTANCE) ? true : false;
 }
 
-double distanceFromObject()
+double distanceFromObject(int sensor)
 {
-  digitalWrite(ECHO_SEND, LOW);
+  echoRead = sensor[0];
+  echoSend = sensor[1];
+  digitalWrite(echoSend, LOW);
   delayMicroseconds(2);
-  digitalWrite(ECHO_SEND, HIGH);
+  digitalWrite(echoSend, HIGH);
   delayMicroseconds(10);
-  digitalWrite(ECHO_SEND, LOW);
-  return pulseIn(ECHO_READ, HIGH) * 0.034 / 2;
+  digitalWrite(echoSend, LOW);
+  return pulseIn(echoRead, HIGH) * 0.034 / 2;
 }
