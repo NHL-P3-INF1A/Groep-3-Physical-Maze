@@ -134,3 +134,43 @@ void loop()
       break;
   }
 }
+
+boolean startup()
+{
+  int linesPassed = 0;
+  boolean currentColor = false;
+  boolean done = false;
+  boolean hasGotPilon = false;
+
+  if (linesPassed == 0)
+  {
+     while(!detectWall(ECHO_FORWARD, 59)){} 
+     delay(1000);
+  }
+  driveForward(200);
+  while(linesPassed <= 6)
+  {
+    if (currentColor != isOnLightColor())
+    {
+      currentColor = isOnLightColor;
+      linesPassed++;
+    }
+  }
+  while(!done)
+  {
+    if (!isOnLightColor())
+    {
+      gripperClose();
+      hasGotPilon = true;
+    }
+    if (hasGotPilon)
+    {
+      if (isOnLightColor())
+      {
+        //Stuff to follow the line for a small bit
+        turnLeft();
+        done = true;
+      }
+    }
+  }
+}

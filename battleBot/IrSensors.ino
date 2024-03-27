@@ -19,3 +19,13 @@ boolean isOnLightColor()
   }
   return (averageColor / 4) <= 800;
 }
+
+boolean isLightOnLeft()
+{
+  return (analogRead(IR_SENSORS[0]) < 800);
+}
+
+boolean isLightOnRight()
+{
+  return (analogRead(IR_SENSORS[3]) < 800);
+}
