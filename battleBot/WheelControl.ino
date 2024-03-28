@@ -25,18 +25,7 @@ void driveRight(int speed)
 void driveForward(int speed)
 {
   driveDirection = forward;
-  if(detectWall(ECHO_LEFT, WALLHUG_DISTANCE + 1))
-  {
-    setMotors(speed, 0, 0, 0); // speed - 100
-  }
-  else if(ECHO_LEFT, WALLHUG_DISTANCE - 1)
-  {
-    setMotors(0, 0, speed, 0); 
-  }
-  else
-  {
-    setMotors(speed, 0, speed, 0);
-  }
+  setMotors(speed, 0, speed, 0);
 }
 
 // ==== [ Drive backwards at 0-255 speed ] ====================================
@@ -61,6 +50,11 @@ boolean turnLeft()
 boolean turnRight()
 {
   driveRight(255);
+}
+
+boolean turnRightBack()
+{
+  setMotors(180, 0, 0, 255);  
 }
 
 void incrementPulseLeft()

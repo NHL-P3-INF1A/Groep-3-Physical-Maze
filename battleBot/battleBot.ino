@@ -11,6 +11,7 @@ Adafruit_NeoPixel strip(LED_COUNT, LED_PIN, NEO_RGB + NEO_KHZ800);
 #define   MOTOR_RIGHT_BACK        6   // Motor B2 RB
 
 #define   MOTOR_LEFT_READ         2   // Interrupt Left motor
+#define   DRIVE_SPEED             255 // Speed at which it drives normally
 
 // ==== [ Echo Sensor Pins ] ==================================================
 const int ECHO_FORWARD[]        = {9, 4}; // {Echo Read, Echo Send}
@@ -48,7 +49,7 @@ long pulsesRight                = 0;
 long pulseOffset                = 0;
 
 enum Direction {forward, right, left, backwards, none};
-enum Action {drivingForward, turningRight, unstuck};
+enum Action {drivingForward, turningLeft, turningRight, unstuck};
 Direction driveDirection;
 Action currentAction;
 
@@ -93,7 +94,7 @@ void loop()
 {
   gripperUpdate();
 //
- 
+  Serial.println(distanceFromObject(ECHO_LEFT));
   switch(currentAction)
   {
     case drivingForward: 
@@ -101,17 +102,21 @@ void loop()
       {
         currentAction = turningRight;
       }
-      driveForward(255);
-      break;
-    case turningRight:
-      if(!detectWall(ECHO_FORWARD, STOP_DISTANCE + 10))
+      if(!detectWall(ECHO_LEFT, WALLHUG_DISTANCE + 5))
       {
-        driveStop();
-        currentAction = drivingForward;
+        setMotors(0, 0, DRIVE_SPEED, 0); 
+      }
+      else if(detectWall(ECHO_LEFT, WALLHUG_DISTANCE + 1))
+      {
+        setMotors(DRIVE_SPEED, 0, DRIVE_SPEED - 100, 0);
+      }
+      else if(ECHO_LEFT, WALLHUG_DISTANCE - 1)
+      {
+        setMotors(DRIVE_SPEED - 100, 0, DRIVE_SPEED, 0); 
       }
       else
       {
-        turnRight();  
+        driveForward(255);
       }
       break;
     case unstuck:
