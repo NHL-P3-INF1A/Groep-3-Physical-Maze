@@ -85,6 +85,7 @@ void setup()
   
   gripperClose();
   currentAction = drivingForward;
+  startup();
 }
 
 // Await signal
@@ -92,9 +93,8 @@ void setup()
 // Enter maze
 void loop()
 {
+//  stayOnLine(255);
   gripperUpdate();
-//
-  Serial.println(distanceFromObject(ECHO_LEFT));
   switch(currentAction)
   {
     case drivingForward: 
@@ -140,42 +140,79 @@ void loop()
   }
 }
 
-boolean startup()
+void stayOnLine(int speed)
+{
+  if (!isLightOnLeft())
+  {
+    setMotors(speed - 100, 0, speed, 0); // speed - 100
+  }
+  else if(!isLightOnRight())
+  {
+    setMotors(speed, 0, speed - 100, 0); // speed - 100
+  }
+  else
+  {
+    driveForward(speed);
+  }
+}
+
+void startup()
 {
   int linesPassed = 0;
   boolean currentColor = false;
   boolean done = false;
   boolean hasGotPilon = false;
 
+  // Wait untill an object is detected in front of it
   if (linesPassed == 0)
   {
-     while(!detectWall(ECHO_FORWARD, 59)){} 
+     delay(100);
+     while(!detectWall(ECHO_FORWARD, 59))
+     {
+       delay(100);
+       Serial.println("Waiting for signal");
+     } 
      delay(1000);
+     Serial.println("starting up");
   }
-  driveForward(200);
+  driveForward(255);
+  //Count the lines it passes whilst driving forward
+  //When it reaches 7 switches, go to the next phase
   while(linesPassed <= 6)
   {
     if (currentColor != isOnLightColor())
     {
+      Serial.println("Detected line");
       currentColor = isOnLightColor;
       linesPassed++;
     }
   }
+  Serial.println("Waiting for the black square");
+  //Loop untill it's done with the startup sequence
   while(!done)
   {
+    //Close the gripper once a black line is detected
     if (!isOnLightColor())
     {
       gripperClose();
       hasGotPilon = true;
     }
+    //If it has the pilon, drive forward untill it reached the end of the black square
     if (hasGotPilon)
     {
       if (isOnLightColor())
       {
         //Stuff to follow the line for a small bit
-        turnLeft();
+        driveLeft(255);
+        delay(500);
+        driveForward(200);
         done = true;
       }
     }
   }
+}
+
+void finish()
+{
+  
 }

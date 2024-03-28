@@ -22,10 +22,10 @@ boolean isOnLightColor()
 
 boolean isLightOnLeft()
 {
-  return (analogRead(IR_SENSORS[0]) < 800);
+  return (analogRead(IR_SENSORS[1]) < 800);
 }
 
 boolean isLightOnRight()
 {
-  return (analogRead(IR_SENSORS[3]) < 800);
+  return (analogRead(IR_SENSORS[2]) < 800);
 }
