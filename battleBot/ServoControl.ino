@@ -1,4 +1,4 @@
-#define GRIPPER_OPEN 1500
+#define GRIPPER_OPEN 1700
 #define GRIPPER_CLOSE 1000
 
 void gripperOpen()
@@ -19,7 +19,7 @@ void gripperUpdate()
 void moveGripper(int pulseDuration)
 {
   static unsigned long timer;
-  static unsigned int pulse1 = 1500;
+  static unsigned int pulse1 = 1700;
   if (pulseDuration > 0)
   {
     pulse1 = pulseDuration;
