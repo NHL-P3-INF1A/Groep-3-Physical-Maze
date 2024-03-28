@@ -83,9 +83,8 @@ void setup()
   setPixelRgb(LED_LEFT_BACK, 128, 0, 0);
   setPixelRgb(LED_RIGHT_BACK, 128, 0, 0);
   
-  gripperClose();
   currentAction = drivingForward;
-  startup();
+//  startup();
 }
 
 // Await signal
@@ -93,7 +92,8 @@ void setup()
 // Enter maze
 void loop()
 {
-//  stayOnLine(255);
+  
+  stayOnLine(255);
   gripperUpdate();
   switch(currentAction)
   {
@@ -144,11 +144,11 @@ void stayOnLine(int speed)
 {
   if (!isLightOnLeft())
   {
-    setMotors(speed - 100, 0, speed, 0); // speed - 100
+    setMotors(speed, 0, 0, 0); // speed - 100
   }
   else if(!isLightOnRight())
   {
-    setMotors(speed, 0, speed - 100, 0); // speed - 100
+    setMotors(0, 0, speed, 0); // speed - 100
   }
   else
   {
@@ -161,14 +161,16 @@ void startup()
   int linesPassed = 0;
   boolean currentColor = false;
   boolean done = false;
-  boolean hasGotPilon = false;
+  boolean hasGotPion = false;
 
   // Wait untill an object is detected in front of it
   if (linesPassed == 0)
   {
+     gripperOpen();
      delay(100);
-     while(!detectWall(ECHO_FORWARD, 59))
+     while(!detectWall(ECHO_FORWARD, 30))
      {
+       gripperUpdate();
        delay(100);
        Serial.println("Waiting for signal");
      } 
@@ -180,10 +182,11 @@ void startup()
   //When it reaches 7 switches, go to the next phase
   while(linesPassed <= 6)
   {
-    if (currentColor != isOnLightColor())
+    boolean detectedColor = isOnLightColor();
+    if (currentColor != detectedColor)
     {
       Serial.println("Detected line");
-      currentColor = isOnLightColor;
+      currentColor = detectedColor;
       linesPassed++;
     }
   }
@@ -195,10 +198,11 @@ void startup()
     if (!isOnLightColor())
     {
       gripperClose();
-      hasGotPilon = true;
+      hasGotPion = true;
     }
-    //If it has the pilon, drive forward untill it reached the end of the black square
-    if (hasGotPilon)
+    gripperUpdate();
+    //If it has the Pion, drive forward untill it reached the end of the black square
+    if (hasGotPion)
     {
       if (isOnLightColor())
       {
