@@ -52,6 +52,7 @@ enum Direction {forward, right, left, backwards, none};
 enum Action {drivingForward, turningLeft, turningRight, unstuck};
 Direction driveDirection;
 Action currentAction;
+unsigned long timeToStartDetectingFinish;
 
 void setup()
 {
@@ -147,6 +148,11 @@ void loop()
       blinkLed(100);
       break;
   }
+
+  if(timeToStartDetectingFinish < millis())
+  {
+    detectFinish();
+  }
 }
 
 void stayOnLine(int speed)
@@ -169,7 +175,6 @@ void startup()
 {
   int linesPassed = 0;
   boolean currentColor = false;
-  boolean done = false;
   boolean hasGotPion = false;
 
   // Wait untill an object is detected in front of it
@@ -198,7 +203,7 @@ void startup()
   }
   Serial.println("Waiting for the black square");
   //Loop untill it's done with the startup sequence
-  while(!done)
+  while(true)
   {
     //Close the gripper once a black line is detected
     if (!isOnLightColor())
@@ -221,13 +226,35 @@ void startup()
           stayOnLine(200);
         }
         driveForward(200);
-        done = true;
+        break;
       }
     }
   }
+  timeToStartDetectingFinish = millis() + 10000;
 }
 
-void finish()
+void detectFinish()
 {
-  
+  if(!isLightOnLeft() || !isLightOnRight)
+  {
+    while(isOnLightColor())
+    {
+      stayOnLine(255);
+    }  
+    dropPion();
+  }
+}
+
+void dropPion()
+{
+  gripperOpen();
+  unsigned long timer = millis() + 1000; 
+  while(timer > millis())
+  {
+    gripperUpdate();
+    driveBack(255);
+  }
+  while(true)
+  {
+  }
 }
