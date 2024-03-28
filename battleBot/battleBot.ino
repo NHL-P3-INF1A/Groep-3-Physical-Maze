@@ -84,7 +84,7 @@ void setup()
   setPixelRgb(LED_RIGHT_BACK, 128, 0, 0);
   
   currentAction = drivingForward;
-//  startup();
+  startup();
 }
 
 // Await signal
@@ -92,8 +92,6 @@ void setup()
 // Enter maze
 void loop()
 {
-  
-  stayOnLine(255);
   gripperUpdate();
   switch(currentAction)
   {
@@ -117,6 +115,17 @@ void loop()
       else
       {
         driveForward(255);
+      }
+      break;
+    case turningRight:
+      if(!detectWall(ECHO_FORWARD, STOP_DISTANCE + 10))
+      {
+        driveStop();
+        currentAction = drivingForward;
+      }
+      else
+      {
+        turnRight();  
       }
       break;
     case unstuck:
@@ -171,11 +180,8 @@ void startup()
      while(!detectWall(ECHO_FORWARD, 30))
      {
        gripperUpdate();
-       delay(100);
-       Serial.println("Waiting for signal");
      } 
      delay(1000);
-     Serial.println("starting up");
   }
   driveForward(255);
   //Count the lines it passes whilst driving forward
@@ -209,6 +215,11 @@ void startup()
         //Stuff to follow the line for a small bit
         driveLeft(255);
         delay(500);
+        long timer = millis() + 1000;
+        while(timer > millis())
+        {
+          stayOnLine(200);
+        }
         driveForward(200);
         done = true;
       }
