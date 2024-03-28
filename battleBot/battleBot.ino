@@ -43,10 +43,8 @@ int sensorTresholds[4][2];
 bool sensorColor[4];
 
 // ==== [ Wheelcontrol counters]  =============================================
-#define PI 3.1415926535897932384626433832795 // Value of Pi
 long pulsesLeft                 = 0;
-long pulsesRight                = 0;
-long pulseOffset                = 0;
+long stuckTimer                 = 0;
 
 enum Direction {forward, right, left, backwards, none};
 enum Action {drivingForward, turningLeft, turningRight, unstuck};
@@ -130,7 +128,11 @@ void loop()
       }
       break;
     case unstuck:
-      // TODO: drive backwards when stuck
+      turnLeftBack();
+      if (stuckTimer < millis())
+      {
+        currentAction = drivingForward;
+      }
       break;
     default:
       currentAction = drivingForward;
@@ -149,9 +151,14 @@ void loop()
       break;
   }
 
-  if(timeToStartDetectingFinish < millis())
+  if (timeToStartDetectingFinish < millis())
   {
     detectFinish();
+  }
+  if (isStuck() && currentAction != unstuck)
+  {
+    currentAction = unstuck;
+    stuckTimer = millis() + 500;
   }
 }
 
@@ -254,6 +261,7 @@ void dropPion()
     gripperUpdate();
     driveBack(255);
   }
+  driveStop();
   while(true)
   {
   }
