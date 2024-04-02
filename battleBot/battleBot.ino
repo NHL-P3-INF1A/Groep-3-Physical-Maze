@@ -19,6 +19,7 @@ const int ECHO_LEFT[]           = {5, 13};
 #define   STOP_DISTANCE           10  // Distance threshold to stop the robot (in cm)
 #define   WALLHUG_DISTANCE        8  // Distance from the left wall
 
+
 // ==== [ Gripper Pins ] ======================================================
 #define   GRIPPER_SERVO           7   // Servo for front gripper
 
@@ -124,11 +125,11 @@ void loop()
       }
       else
       {
-        turnRight();  
+        turnRightSlow();  
       }
       break;
     case unstuck:
-      turnLeftBack();
+      turnRightBack();
       if (stuckTimer < millis())
       {
         currentAction = drivingForward;
@@ -166,11 +167,11 @@ void stayOnLine(int speed)
 {
   if (!isLightOnLeft())
   {
-    setMotors(speed, 0, 0, 0); // speed - 100
+    setMotors(speed, 0, 0, 0);
   }
   else if(!isLightOnRight())
   {
-    setMotors(0, 0, speed, 0); // speed - 100
+    setMotors(0, 0, speed, 0);
   }
   else
   {
@@ -227,7 +228,7 @@ void startup()
         //Stuff to follow the line for a small bit
         driveLeft(255);
         delay(500);
-        long timer = millis() + 1000;
+        long timer = millis() + 1500;
         while(timer > millis())
         {
           stayOnLine(200);
@@ -242,7 +243,7 @@ void startup()
 
 void detectFinish()
 {
-  if(!isLightOnLeft() || !isLightOnRight)
+  if(isAnythingBlack())
   {
     while(isOnLightColor())
     {

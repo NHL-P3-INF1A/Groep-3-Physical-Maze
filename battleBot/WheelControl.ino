@@ -42,22 +42,27 @@ void driveStop()
   driveDirection = none;
 }
 
-boolean turnLeft()
+void turnLeft()
 {
   driveLeft(255);
 }
 
-boolean turnRight()
+void turnRight()
 {
   driveRight(255);
 }
 
-boolean turnRightBack()
+void turnRightSlow()
 {
-  setMotors(0, 210, 0, 255);  
+  driveRight(210);
 }
 
-boolean turnLeftBack()
+void turnRightBack()
+{
+  setMotors(0, 190, 0, 255);  
+}
+
+void turnLeftBack()
 {
   setMotors(0, 255, 0, 210);
 }
@@ -72,7 +77,7 @@ boolean isStuck()
   static long previousPulses = pulsesLeft;
   static long timer = millis();
   static int amountOfFailedPulses;
-
+  
   if(timer <= millis())
   {
     if ((previousPulses + 3) < pulsesLeft)
@@ -84,11 +89,12 @@ boolean isStuck()
     {
       amountOfFailedPulses++;
     }
-    if (amountOfFailedPulses >= 20)
+    if (amountOfFailedPulses >= 10)
     {
       return true;
     } 
     timer = millis() + 100;
   }
+  
   return false;
 }

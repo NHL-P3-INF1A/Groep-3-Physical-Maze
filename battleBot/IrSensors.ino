@@ -29,3 +29,15 @@ boolean isLightOnRight()
 {
   return (analogRead(IR_SENSORS[3]) < 800);
 }
+
+boolean isAnythingBlack()
+{
+  for (int pin : IR_SENSORS)
+  {
+    if(analogRead(pin) > 800)
+    {
+      return true;  
+    }
+  }  
+  return false;
+}
