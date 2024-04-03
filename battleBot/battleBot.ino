@@ -118,7 +118,8 @@ void loop()
       driveDirection = right;
       if(!detectWall(ECHO_FORWARD, STOP_DISTANCE + 10))
       {
-        driveStop();
+        driveRight(255);
+        delay(200);
         currentAction = drivingForward;
       }
       else

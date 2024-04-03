@@ -59,7 +59,7 @@ void turnRightSlow()
   if(timer < millis())
   {
     stateToggle = !stateToggle;
-    timer = millis() + 20;
+    timer = millis() + 100 + (stateToggle ? 50 : 0);
   }
   if(stateToggle)
   {
@@ -69,7 +69,6 @@ void turnRightSlow()
   {
     driveBack(255);
   }
-  
 }
 
 void turnRightBack()
