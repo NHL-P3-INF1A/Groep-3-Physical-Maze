@@ -39,10 +39,6 @@ const int WHITE[]               = {255, 255, 255};
 // ==== [ Infrared Sensoren ] =================================================
 const int IR_SENSORS[]          = {A3, A2, A1, A0}; // From left to right when looking from the back, sensor 1, 3, 6, 8
 
-// ==== [ Array for IrSensor ] ================================================
-int sensorTresholds[4][2];
-bool sensorColor[4];
-
 // ==== [ Wheelcontrol counters]  =============================================
 long pulsesLeft                 = 0;
 long stuckTimer                 = 0;
@@ -83,8 +79,8 @@ void setup()
   setPixelRgb(LED_LEFT_BACK, 128, 0, 0);
   setPixelRgb(LED_RIGHT_BACK, 128, 0, 0);
   
-  currentAction = drivingForward;
   startup();
+  currentAction = drivingForward;
 }
 
 // Await signal
@@ -181,18 +177,36 @@ void stayOnLine(int speed)
 
 void startup()
 {
+  long startupTime = millis() + 1000;
   int linesPassed = 0;
+  int amountOfPulses = 0;
   boolean currentColor = false;
   boolean hasGotPion = false;
+  boolean detectedPion = false;
 
   // Wait untill an object is detected in front of it
   if (linesPassed == 0)
   {
      gripperOpen();
-     delay(100);
-     while(!detectWall(ECHO_FORWARD, 30))
+     while(millis() <= startupTime)
      {
        gripperUpdate();
+     }
+     while(!detectedPion)
+     {
+        delay(100);
+        if (!detectWall(ECHO_FORWARD, 30))
+        {
+          amountOfPulses = 0;
+        }
+        else
+        {
+          amountOfPulses++;
+        }
+        if (amountOfPulses >= 10)
+        {
+          detectedPion = true;
+        } 
      } 
      delay(1000);
   }
