@@ -54,7 +54,22 @@ void turnRight()
 
 void turnRightSlow()
 {
-  driveRight(210);
+  static unsigned long timer;
+  static bool stateToggle;
+  if(timer < millis())
+  {
+    stateToggle = !stateToggle;
+    timer = millis() + 20;
+  }
+  if(stateToggle)
+  {
+    driveRight(210);
+  }
+  else
+  {
+    driveBack(255);
+  }
+  
 }
 
 void turnRightBack()

@@ -102,6 +102,7 @@ void loop()
       }
       if(!detectWall(ECHO_LEFT, WALLHUG_DISTANCE + 5))
       {
+        driveDirection = left;
         setMotors(0, 0, DRIVE_SPEED, 0); 
       }
       else if(detectWall(ECHO_LEFT, WALLHUG_DISTANCE + 1))
@@ -118,6 +119,7 @@ void loop()
       }
       break;
     case turningRight:
+      driveDirection = right;
       if(!detectWall(ECHO_FORWARD, STOP_DISTANCE + 10))
       {
         driveStop();
