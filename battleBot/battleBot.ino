@@ -52,7 +52,10 @@ unsigned long timeToStartDetectingFinish;
 void setup()
 {
   Serial.begin(9600);
- 
+
+  // Play nokia song on startup
+  // playNokia();
+
   // Motor
   pinMode(MOTOR_LEFT_FORWARD, OUTPUT);
   pinMode(MOTOR_LEFT_BACK, OUTPUT);
@@ -88,6 +91,8 @@ void setup()
 // Enter maze
 void loop()
 {
+  // Play Doom soundtrack when entering the maze
+  // playDoom();
   gripperUpdate();
   switch(currentAction)
   {
@@ -282,5 +287,6 @@ void dropPion()
   driveStop();
   while(true)
   {
+    playFinalFantasy();
   }
 }
