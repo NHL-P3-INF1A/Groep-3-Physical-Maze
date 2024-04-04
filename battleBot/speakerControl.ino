@@ -263,13 +263,26 @@ int wholenote = (60000 * 4) / tempo;
 
 int divider = 0, noteDuration = 0;
 
-void playSong(const int* melody, int notes) {
-  // iterate over the notes of the melody_nokia.
+boolean playSong(const int* melody, int notes) 
+{
+  static unsigned long previousNoteMillis = millis();
+  static double noteDuration = 0;
+  static boolean isPlayingNote = false;
+  static int thisNote = 0;
+  static int* currentMelody = NULL;
+
+  // Restart the counter if the input melody is different
+  if (currentMelody != melody)
+  {
+    currentMelody = melody;
+    thisNote = 0;
+  }
+  
   // Remember, the array is twice the number of notes (notes + durations)
-  for (int thisNote = 0; thisNote < notes * 2; thisNote = thisNote + 2) 
+  if (!isPlayingNote)
   {
     // calculates the duration of each note
-    divider = pgm_read_word_near(melody+thisNote + 1);
+    divider = pgm_read_word_near(currentMelody + thisNote + 1);
     if (divider > 0) 
     {
       // regular note, just proceed
@@ -283,33 +296,42 @@ void playSong(const int* melody, int notes) {
     }
 
     // we only play the note for 90% of the duration, leaving 10% as a pause
-    unsigned long previousNoteMillis = 0;
-    tone(BUZZER, pgm_read_word_near(melody + thisNote), noteDuration * 0.9);
+    tone(BUZZER, pgm_read_word_near(currentMelody + thisNote), noteDuration * 0.9);
+    // Preparing all the variables to correctly play the notes
     previousNoteMillis = millis();
+    isPlayingNote = true;
+    thisNote += 2;
 
-    // Wait for the specief duration before playing the next note.
-
-    while (millis() - previousNoteMillis < noteDuration) 
+    // Reset the notes if the thisNote is bigger than the amount of notes
+    if (thisNote >= notes * 2)
     {
-      // Wacht totdat de duur van de noot voorbij is
-    }
+      thisNote = 0;
+      return true;
+    } 
+  }
 
-    // stop the waveform generation before the next note.
+  // Loop the 
+  if ((millis() - previousNoteMillis) > noteDuration)
+  {
+    // Wait for the specief duration before playing the next note.
+    // If the amount of milis passed is more than required for the note to play, play the next note
+    isPlayingNote = false;
     noTone(BUZZER);
   }
+  return false;
 }
 
-void playDoom()
+boolean playDoom()
 {
-  playSong(melody_doom, notes_doom);
+  return playSong(melody_doom, notes_doom);
 }
 
-void playNokia()
+boolean playNokia()
 {
-  playSong(melody_nokia, notes_nokia);
+  return playSong(melody_nokia, notes_nokia);
 }
 
-void playFinalFantasy()
+boolean playFinalFantasy()
 {
-  playSong(melody_finalFantasy, notes_finalFantasy);
+  return playSong(melody_finalFantasy, notes_finalFantasy);
 }

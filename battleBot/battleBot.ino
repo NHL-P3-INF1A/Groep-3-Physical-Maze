@@ -49,7 +49,9 @@ long stuckTimer                 = 0;
 #define BUZZER                    13  // Speaker was A5
 
 enum Direction {forward, right, left, backwards, none};
-enum Action {drivingForward, turningLeft, turningRight, unstuck};
+enum Action {drivingForward, turningLeft, turningRight, unstuck, unstuck2, unstuck3};
+enum IsStuck {stuckLeft, stuckRight, stuckBoth};
+IsStuck isCurrentlyStuck;
 Direction driveDirection;
 Action currentAction;
 unsigned long timeToStartDetectingFinish;
@@ -57,10 +59,6 @@ unsigned long timeToStartDetectingFinish;
 void setup()
 {
   Serial.begin(9600);
-
-  // Play nokia song on startup
-  pinMode(BUZZER, OUTPUT);
-  playNokia();
 
   // Motor
   pinMode(MOTOR_LEFT_FORWARD, OUTPUT);
@@ -82,17 +80,15 @@ void setup()
     pinMode(element, INPUT);
   }
 
+  // Buzzer
+  pinMode(BUZZER, OUTPUT);
+
   // Color setup
   strip.begin();
   setPixelRgb(LED_LEFT_FRONT, 255, 255, 255);
   setPixelRgb(LED_RIGHT_FRONT, 255, 255, 255);
   setPixelRgb(LED_LEFT_BACK, 128, 0, 0);
   setPixelRgb(LED_RIGHT_BACK, 128, 0, 0);
-
-  while(true)
-  {
-    Serial.println(distanceFromObject(ECHO_LEFT));
-  }
   
   startup();
   currentAction = drivingForward;
@@ -100,8 +96,8 @@ void setup()
 
 void loop()
 {
-  // Play Doom soundtrack when entering the maze
-  // playDoom();
+//  Play Doom soundtrack when entering the maze
+  //playDoom();
   gripperUpdate();
   switch(currentAction)
   {
@@ -142,7 +138,22 @@ void loop()
       }
       break;
     case unstuck:
+      driveDirection = backwards;
+      driveBack(255);
+      if (stuckTimer < millis())
+      {
+        stuckTimer = millis() + 500;
+      }
+      break;
+    case unstuck2:
+      driveDirection = backwards;
       turnRightBack();
+      if (stuckTimer < millis())
+      {
+        stuckTimer = millis() + 500;
+      }
+    case unstuck3:
+      turnLeftBack();
       if (stuckTimer < millis())
       {
         currentAction = drivingForward;
@@ -169,10 +180,23 @@ void loop()
   {
     detectFinish();
   }
-  if (isStuck() && currentAction != unstuck)
+  switch (isCurrentlyStuck)
   {
-    currentAction = unstuck;
-    stuckTimer = millis() + 500;
+    case stuckBoth:
+      currentAction = unstuck;
+      stuckTimer = millis() + 500;
+      break;
+    case stuckLeft:
+      currentAction = unstuck2;
+      stuckTimer = millis() + 500;
+      break;
+    case stuckRight:
+      currentAction = unstuck3;
+      stuckTimer = millis() + 500;
+      break;
+    default:
+      currentAction = drivingForward;
+      break;
   }
 }
 
@@ -194,7 +218,6 @@ void stayOnLine(int speed)
 
 void startup()
 {
-  long startupTime = millis() + 1000;
   int linesPassed = 0;
   int amountOfPulses = 0;
   boolean currentColor = false;
@@ -205,13 +228,12 @@ void startup()
   if (linesPassed == 0)
   {
      gripperOpen();
-     while(millis() <= startupTime)
+     while(!playNokia())
      {
        gripperUpdate();
      }
      while(!detectedPion)
      {
-        delay(100);
         if (!detectWall(ECHO_FORWARD, 30))
         {
           amountOfPulses = 0;
@@ -235,12 +257,10 @@ void startup()
     boolean detectedColor = isOnLightColor();
     if (currentColor != detectedColor)
     {
-      Serial.println("Detected line");
       currentColor = detectedColor;
       linesPassed++;
     }
   }
-  Serial.println("Waiting for the black square");
   //Loop untill it's done with the startup sequence
   while(true)
   {
@@ -294,8 +314,6 @@ void dropPion()
     driveBack(255);
   }
   driveStop();
-  while(true)
-  {
-    playFinalFantasy();
-  }
+  while(!playFinalFantasy());
+  while(true);
 }

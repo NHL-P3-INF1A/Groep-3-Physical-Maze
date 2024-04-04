@@ -78,7 +78,7 @@ void turnRightBack()
 
 void turnLeftBack()
 {
-  setMotors(0, 255, 0, 210);
+  setMotors(0, 255, 0, 190);
 }
 
 void incrementPulseLeft()
@@ -88,32 +88,45 @@ void incrementPulseLeft()
 
 void incrementPulseRight()
 {
-  pulsesLeft++;
+  pulsesRight++;
 }
 
-boolean isStuck()
+void isStuck()
 {
-  static long previousPulses = pulsesLeft;
-  static long timer = millis();
-  static int amountOfFailedPulses;
+  static long previousLeftPulses = pulsesLeft;
+  static long previousRightPulses = pulsesRight;
+  static unsigned long timer = millis();
+  static int amountOfFailedLeftPulses;
+  static int amountOfFailedRightPulses;
   
   if(timer <= millis())
   {
-    if ((previousPulses + 3) < pulsesLeft)
+    if ((previousLeftPulses + 1) > pulsesLeft)
     {
-      amountOfFailedPulses = 0;
-      previousPulses = pulsesLeft;
+      amountOfFailedLeftPulses = 0;
+      previousLeftPulses = pulsesLeft;
+    }
+    if ((previousRightPulses + 1) > pulsesRight)
+    {
+      amountOfFailedRightPulses = 0;
+      previousRightPulses = pulsesRight;
+    }
+    timer = millis() + 100;
+    if (amountOfFailedLeftPulses >= 6 && amountOfFailedRightPulses >= 6)
+    {
+      isCurrentlyStuck = stuckBoth;
+    } 
+    else if (amountOfFailedLeftPulses >= 6)
+    {
+      isCurrentlyStuck = stuckLeft;
+    }
+    else if (amountOfFailedRightPulses >= 6)
+    {
+      isCurrentlyStuck = stuckRight;
     }
     else
     {
-      amountOfFailedPulses++;
+      isCurrentlyStuck = NULL;
     }
-    if (amountOfFailedPulses >= 10)
-    {
-      return true;
-    } 
-    timer = millis() + 100;
   }
-  
-  return false;
 }
