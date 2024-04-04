@@ -11,16 +11,17 @@ Adafruit_NeoPixel strip(LED_COUNT, LED_PIN, NEO_RGB + NEO_KHZ800);
 #define   MOTOR_RIGHT_BACK        6   // Motor B2 RB
 
 #define   MOTOR_LEFT_READ         2   // Interrupt Left motor
+#define   MOTOR_RIGHT_READ        3   // Interrupt right motor
 #define   DRIVE_SPEED             255 // Speed at which it drives normally
 
 // ==== [ Echo Sensor Pins ] ==================================================
 const int ECHO_FORWARD[]        = {9, 4}; // {Echo Read, Echo Send}
-const int ECHO_LEFT[]           = {5, 13};
+const int ECHO_LEFT[]           = {5, A5}; // was 13
 #define   STOP_DISTANCE           10  // Distance threshold to stop the robot (in cm)
 #define   WALLHUG_DISTANCE        8  // Distance from the left wall
 
 
-// ==== [ Gripper Pins ] ======================================================
+// ==== [ Gripper Pin ] =======================================================
 #define   GRIPPER_SERVO           7   // Servo for front gripper
 
 // ==== [ Led Layout ] ========================================================
@@ -36,12 +37,16 @@ const int BLUE[]                = {0, 0, 255};
 const int ORANGE[]              = {255, 80, 0};
 const int WHITE[]               = {255, 255, 255};
 
-// ==== [ Infrared Sensoren ] =================================================
+// ==== [ Infrared Sensors ] ==================================================
 const int IR_SENSORS[]          = {A3, A2, A1, A0}; // From left to right when looking from the back, sensor 1, 3, 6, 8
 
 // ==== [ Wheelcontrol counters]  =============================================
 long pulsesLeft                 = 0;
+long pulsesRight                = 0;
 long stuckTimer                 = 0;
+
+// ==== [ Speaker pin ] =======================================================
+#define BUZZER                    13  // Speaker was A5
 
 enum Direction {forward, right, left, backwards, none};
 enum Action {drivingForward, turningLeft, turningRight, unstuck};
@@ -54,7 +59,8 @@ void setup()
   Serial.begin(9600);
 
   // Play nokia song on startup
-  // playNokia();
+  pinMode(BUZZER, OUTPUT);
+  playNokia();
 
   // Motor
   pinMode(MOTOR_LEFT_FORWARD, OUTPUT);
@@ -62,6 +68,7 @@ void setup()
   pinMode(MOTOR_RIGHT_BACK, OUTPUT);
   pinMode(MOTOR_RIGHT_FORWARD, OUTPUT);
   attachInterrupt(digitalPinToInterrupt(MOTOR_LEFT_READ), incrementPulseLeft, CHANGE);
+  attachInterrupt(digitalPinToInterrupt(MOTOR_RIGHT_READ), incrementPulseRight, CHANGE);
 
   // Echo Sensor
   pinMode(ECHO_FORWARD[0], INPUT);
@@ -81,14 +88,16 @@ void setup()
   setPixelRgb(LED_RIGHT_FRONT, 255, 255, 255);
   setPixelRgb(LED_LEFT_BACK, 128, 0, 0);
   setPixelRgb(LED_RIGHT_BACK, 128, 0, 0);
+
+  while(true)
+  {
+    Serial.println(distanceFromObject(ECHO_LEFT));
+  }
   
   startup();
   currentAction = drivingForward;
 }
 
-// Await signal
-// Grab object
-// Enter maze
 void loop()
 {
   // Play Doom soundtrack when entering the maze

@@ -86,6 +86,11 @@ void incrementPulseLeft()
   pulsesLeft++;
 }
 
+void incrementPulseRight()
+{
+  pulsesLeft++;
+}
+
 boolean isStuck()
 {
   static long previousPulses = pulsesLeft;
