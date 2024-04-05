@@ -139,7 +139,7 @@ void loop()
       driveDirection = right;
       if(!detectWall(ECHO_FORWARD, STOP_DISTANCE + 10))
       {
-        turnTimer = millis() + 150;
+        turnTimer = millis() + 250;
         currentAction = turningRight2;
       }
       else
