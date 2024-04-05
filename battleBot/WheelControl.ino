@@ -28,6 +28,8 @@ void driveForward(int speed)
   setMotors(speed, 0, speed, 0);
 }
 
+// ==== [ Drive forwards and right at 0-255 speed ] ===========================
+
 void driveForwardRight(int speed)
 {
   driveDirection = forward;
@@ -48,25 +50,35 @@ void driveStop()
   driveDirection = none;
 }
 
+// ==== [ Turning left ] ======================================================
+
 void turnLeft()
 {
   driveLeft(255);
 }
+
+// ==== [ Turning right ] =====================================================
 
 void turnRight()
 {
   driveRight(255);
 }
 
+// ==== [ Turning right slowly ] ==============================================
+
 void turnRightSlow()
 {
   static unsigned long timer;
   static bool stateToggle;
+  // If the timer expired, switch state
   if(timer < millis())
   {
+    // Switching state
     stateToggle = !stateToggle;
+    // reset timer
     timer = millis() + 100 + (stateToggle ? 50 : 0);
   }
+  // Switch driving direction that is based on the current state toggle
   if(stateToggle)
   {
     driveRight(210);
@@ -77,25 +89,35 @@ void turnRightSlow()
   }
 }
 
+// ==== [ Go backwards and right ] ============================================
+
 void turnRightBack()
 {
   setMotors(0, 180, 0, 255);  
 }
+
+// ==== [ Go backwards and left ] =============================================
 
 void turnLeftBack()
 {
   setMotors(0, 255, 0, 180);
 }
 
+// ==== [ Interrupt left wheel ] ==============================================
+
 void incrementPulseLeft()
 {
   pulsesLeft++;
 }
 
+// ==== [ Interrupt right wheel ] =============================================
+
 void incrementPulseRight()
 {
   pulsesRight++;
 }
+
+// ==== [ Checking if bot stuck ] =============================================
 
 void isStuck()
 {
@@ -107,19 +129,7 @@ void isStuck()
   
   if(timer <= millis())
   {
-//    Serial.println("Attempting unstuck");
-//    Serial.print("pulsesLeft: ");
-//    Serial.println(pulsesLeft);
-//    Serial.print("pulsesRight: ");
-//    Serial.println(pulsesRight);
-//    Serial.print("previousLeftPulses: ");
-//    Serial.println(previousLeftPulses);
-//    Serial.print("previousRightPulses: ");
-//    Serial.println(previousRightPulses);
-    Serial.print("amountOfFailedLeftPulses: ");
-    Serial.println(amountOfFailedLeftPulses);
-    Serial.print("amountOfFailedRightPulses: ");
-    Serial.println(amountOfFailedRightPulses);
+    // If the left pulses are 3 the previous calculation, reset
     if ((previousLeftPulses + 3) < pulsesLeft)
     {
       amountOfFailedLeftPulses = 0;
@@ -129,6 +139,7 @@ void isStuck()
     {
       amountOfFailedLeftPulses++;
     }
+    // If the right pulses are 3 than the previous calculation, reset
     if ((previousRightPulses + 3) < pulsesRight)
     {
       amountOfFailedRightPulses = 0;
@@ -138,25 +149,26 @@ void isStuck()
     {
       amountOfFailedRightPulses++;
     }
+    // Reset timer
     timer = millis() + 100;
+    // If both are stuck, set isCurrentlyStuck to both
     if (amountOfFailedLeftPulses >= 10 && amountOfFailedRightPulses >= 10)
     {
-      Serial.println("Running unstuck both");
       isCurrentlyStuck = stuckBoth;
-    } 
+    }
+    // If left is stuck, set isCurrentlyStuck to left
     else if (amountOfFailedLeftPulses >= 10)
     {
-      Serial.println("Running unstuck left");
       isCurrentlyStuck = stuckLeft;
     }
+    // If right is stuck, set isCurrentlyStuck to right
     else if (amountOfFailedRightPulses >= 10)
     {
-      Serial.println("Running unstuck right");
       isCurrentlyStuck = stuckRight;
     }
+    // If everything is good, then set isCurrentlyStuck to not stuck
     else
     {
-      Serial.println("Resetting lights");
       setPixelByName(LED_RIGHT_BACK, RED);
       isCurrentlyStuck = notStuck;
     }
