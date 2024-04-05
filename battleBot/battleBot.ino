@@ -50,12 +50,12 @@ long turnTimer                  = 0;
 #define BUZZER                    13  // Speaker was A5
 
 enum Direction {forward, right, left, backwards, none};
-enum Action {drivingForward, turningLeft, turningRight, turningRight2, unstuckBoth, unstuckLeft, unstuckRight};
+enum Action {drivingForward, turningLeft, turningRight, turningRight2, unstuckBoth, unstuckLeft, unstuckRight, unstuckForward};
 enum IsStuck {stuckLeft, stuckRight, stuckBoth, notStuck};
 IsStuck isCurrentlyStuck;
 Direction driveDirection;
 Action currentAction;
-unsigned long timeToStartDetectingFinish;
+unsigned long timeToStartDetectingFinish = 1000000;
 
 void setup()
 {
@@ -91,7 +91,7 @@ void setup()
   setPixelRgb(LED_LEFT_BACK, 128, 0, 0);
   setPixelRgb(LED_RIGHT_BACK, 128, 0, 0);
   
-  startup();
+//  startup();
   isCurrentlyStuck = notStuck;
   currentAction = drivingForward;
 }
@@ -154,7 +154,8 @@ void loop()
       driveBack(255);
       if (stuckTimer < millis())
       {
-        currentAction = drivingForward;
+        stuckTimer = millis() + 200;
+        currentAction = unstuckForward;
       }
       break;
     case unstuckLeft:
@@ -162,12 +163,22 @@ void loop()
       turnRightBack();
       if (stuckTimer < millis())
       {
-        currentAction = drivingForward;
+        stuckTimer = millis() + 200;
+        currentAction = unstuckForward;
       }
       break;
     case unstuckRight:
       turnLeftBack();
       driveDirection = backwards;
+      if (stuckTimer < millis())
+      {
+        stuckTimer = millis() + 200;
+        currentAction = unstuckForward;
+      }
+      break;
+    case unstuckForward:
+      driveForward(255);
+      driveDirection = NULL;
       if (stuckTimer < millis())
       {
         currentAction = drivingForward;
@@ -223,13 +234,13 @@ void loop()
 
 void stayOnLine(int speed)
 {
-  if (!isLightOnLeft())
-  {
-    setMotors(speed, 0, 0, 0);
-  }
-  else if(!isLightOnRight())
+  if (!isLightOnRight())
   {
     setMotors(0, 0, speed, 0);
+  }
+  else if(!isLightOnLeft() || millis() > timeToStartDetectingFinish)
+  {
+    setMotors(speed, 0, 0, 0);
   }
   else
   {
@@ -267,10 +278,12 @@ void startup()
         if (amountOfPulses >= 10)
         {
           detectedPion = true;
-        } 
+        }
+        delay(100);
      } 
-     delay(1000);
   }
+  while(!playNokia()){}
+  delay(1000);
   driveForward(255);
   //Count the lines it passes whilst driving forward
   //When it reaches 7 switches, go to the next phase
@@ -320,7 +333,7 @@ void detectFinish()
   if(isAnythingBlack())
   {
     Serial.println("Running Finish");
-    while(isOnLightColor())
+    while(isOnLightColor() || detectWall(ECHO_FORWARD, 30))
     {
       stayOnLine(255);
     }  

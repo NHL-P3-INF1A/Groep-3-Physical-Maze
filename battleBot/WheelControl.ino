@@ -101,19 +101,19 @@ void isStuck()
   
   if(timer <= millis())
   {
-    Serial.println("Attempting unstuck");
-    Serial.print("pulsesLeft: ");
-    Serial.println(pulsesLeft);
-    Serial.print("pulsesRight: ");
-    Serial.println(pulsesRight);
-    Serial.print("previousLeftPulses: ");
-    Serial.println(previousLeftPulses);
-    Serial.print("previousRightPulses: ");
-    Serial.println(previousRightPulses);
-    Serial.print("amountOfFailedLeftPulses: ");
-    Serial.println(amountOfFailedLeftPulses);
-    Serial.print("amountOfFailedRightPulses: ");
-    Serial.println(amountOfFailedRightPulses);
+//    Serial.println("Attempting unstuck");
+//    Serial.print("pulsesLeft: ");
+//    Serial.println(pulsesLeft);
+//    Serial.print("pulsesRight: ");
+//    Serial.println(pulsesRight);
+//    Serial.print("previousLeftPulses: ");
+//    Serial.println(previousLeftPulses);
+//    Serial.print("previousRightPulses: ");
+//    Serial.println(previousRightPulses);
+//    Serial.print("amountOfFailedLeftPulses: ");
+//    Serial.println(amountOfFailedLeftPulses);
+//    Serial.print("amountOfFailedRightPulses: ");
+//    Serial.println(amountOfFailedRightPulses);
     if ((previousLeftPulses + 1) < pulsesLeft)
     {
       amountOfFailedLeftPulses = 0;
