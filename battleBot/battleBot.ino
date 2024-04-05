@@ -173,8 +173,6 @@ void loop()
         currentAction = drivingForward;
       }
       break;
-    default:
-      currentAction = drivingForward;
   }
   
   switch(driveDirection)
@@ -187,10 +185,6 @@ void loop()
       break;
     case backwards:
       setPixelByName(LED_RIGHT_BACK, WHITE);
-    default:
-      blinkLed(100);
-      setPixelByName(LED_RIGHT_BACK, RED);
-      break;
   }
 
   if (timeToStartDetectingFinish < millis())
@@ -212,6 +206,7 @@ void loop()
       break;
     case stuckRight:
       isCurrentlyStuck = notStuck;
+      currentAction = unstuckRight;
       stuckTimer = millis() + 500;
       break;
     case notStuck:
