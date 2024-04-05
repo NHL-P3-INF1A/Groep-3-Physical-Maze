@@ -91,7 +91,7 @@ void setup()
   setPixelRgb(LED_LEFT_BACK, 128, 0, 0);
   setPixelRgb(LED_RIGHT_BACK, 128, 0, 0);
   
-//  startup();
+  startup();
   isCurrentlyStuck = notStuck;
   currentAction = drivingForward;
 }
@@ -154,7 +154,7 @@ void loop()
       driveBack(255);
       if (stuckTimer < millis())
       {
-        stuckTimer = millis() + 200;
+        stuckTimer = millis() + 2000;
         currentAction = unstuckForward;
       }
       break;
@@ -163,7 +163,7 @@ void loop()
       turnRightBack();
       if (stuckTimer < millis())
       {
-        stuckTimer = millis() + 200;
+        stuckTimer = millis() + 2000;
         currentAction = unstuckForward;
       }
       break;
@@ -172,7 +172,7 @@ void loop()
       driveDirection = backwards;
       if (stuckTimer < millis())
       {
-        stuckTimer = millis() + 200;
+        stuckTimer = millis() + 2000;
         currentAction = unstuckForward;
       }
       break;
@@ -307,7 +307,7 @@ void startup()
       if (isOnLightColor())
       {
         //Stuff to follow the line for a small bit
-        driveLeft(255);
+        driveLeft(200);
         delay(500);
         long timer = millis() + 1500;
         while(timer > millis())

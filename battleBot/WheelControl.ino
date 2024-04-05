@@ -110,11 +110,11 @@ void isStuck()
 //    Serial.println(previousLeftPulses);
 //    Serial.print("previousRightPulses: ");
 //    Serial.println(previousRightPulses);
-//    Serial.print("amountOfFailedLeftPulses: ");
-//    Serial.println(amountOfFailedLeftPulses);
-//    Serial.print("amountOfFailedRightPulses: ");
-//    Serial.println(amountOfFailedRightPulses);
-    if ((previousLeftPulses + 1) < pulsesLeft)
+    Serial.print("amountOfFailedLeftPulses: ");
+    Serial.println(amountOfFailedLeftPulses);
+    Serial.print("amountOfFailedRightPulses: ");
+    Serial.println(amountOfFailedRightPulses);
+    if ((previousLeftPulses + 3) < pulsesLeft)
     {
       amountOfFailedLeftPulses = 0;
       previousLeftPulses = pulsesLeft;
@@ -123,7 +123,7 @@ void isStuck()
     {
       amountOfFailedLeftPulses++;
     }
-    if ((previousRightPulses + 1) < pulsesRight)
+    if ((previousRightPulses + 3) < pulsesRight)
     {
       amountOfFailedRightPulses = 0;
       previousRightPulses = pulsesRight;
