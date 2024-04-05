@@ -28,6 +28,12 @@ void driveForward(int speed)
   setMotors(speed, 0, speed, 0);
 }
 
+void driveForwardRight(int speed)
+{
+  driveDirection = forward;
+  setMotors(speed, 0, speed - 100, 0);
+}
+
 // ==== [ Drive backwards at 0-255 speed ] ====================================
 void driveBack(int speed)
 {
@@ -59,7 +65,7 @@ void turnRightSlow()
   if(timer < millis())
   {
     stateToggle = !stateToggle;
-    timer = millis() + 50 + (stateToggle ? 100 : 0);
+    timer = millis() + 100 + (stateToggle ? 50 : 0);
   }
   if(stateToggle)
   {
@@ -73,12 +79,12 @@ void turnRightSlow()
 
 void turnRightBack()
 {
-  setMotors(0, 190, 0, 255);  
+  setMotors(0, 180, 0, 255);  
 }
 
 void turnLeftBack()
 {
-  setMotors(0, 255, 0, 190);
+  setMotors(0, 255, 0, 180);
 }
 
 void incrementPulseLeft()

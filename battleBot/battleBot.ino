@@ -90,7 +90,7 @@ void setup()
   setPixelRgb(LED_RIGHT_FRONT, 255, 255, 255);
   setPixelRgb(LED_LEFT_BACK, 128, 0, 0);
   setPixelRgb(LED_RIGHT_BACK, 128, 0, 0);
-  
+
   startup();
   isCurrentlyStuck = notStuck;
   currentAction = drivingForward;
@@ -154,7 +154,7 @@ void loop()
       driveBack(255);
       if (stuckTimer < millis())
       {
-        stuckTimer = millis() + 2000;
+        stuckTimer = millis() + 500;
         currentAction = unstuckForward;
       }
       break;
@@ -163,7 +163,7 @@ void loop()
       turnRightBack();
       if (stuckTimer < millis())
       {
-        stuckTimer = millis() + 2000;
+        stuckTimer = millis() + 500;
         currentAction = unstuckForward;
       }
       break;
@@ -172,12 +172,12 @@ void loop()
       driveDirection = backwards;
       if (stuckTimer < millis())
       {
-        stuckTimer = millis() + 2000;
+        stuckTimer = millis() + 500;
         currentAction = unstuckForward;
       }
       break;
     case unstuckForward:
-      driveForward(255);
+      driveForwardRight(255);
       driveDirection = NULL;
       if (stuckTimer < millis())
       {
@@ -309,13 +309,13 @@ void startup()
         //Stuff to follow the line for a small bit
         driveLeft(200);
         delay(500);
-        long timer = millis() + 1500;
-        while(timer > millis())
+        while(!detectWall(ECHO_LEFT, 10))
         {
           Serial.println("Staying on line");
-          stayOnLine(200);
+          stayOnLine(255);
         }
         driveForward(200);
+        delay(300);
         break;
       }
     }
@@ -339,13 +339,13 @@ void detectFinish()
 void dropPion()
 {
   gripperOpen();
-  unsigned long timer = millis() + 1000; 
-  while(timer > millis())
+  driveStop();
+  delay(100);
+  while(!playFinalFantasy())
   {
     gripperUpdate();
     driveBack(255);
   }
   driveStop();
-  while(!playFinalFantasy());
   while(true);
 }
