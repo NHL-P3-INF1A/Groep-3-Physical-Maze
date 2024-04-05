@@ -150,6 +150,8 @@ void isStuck()
     }
     else
     {
+      Serial.println("Resetting lights");
+      setPixelByName(LED_RIGHT_BACK, RED);
       isCurrentlyStuck = notStuck;
     }
   }
