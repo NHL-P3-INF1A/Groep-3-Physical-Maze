@@ -59,7 +59,7 @@ void turnRightSlow()
   if(timer < millis())
   {
     stateToggle = !stateToggle;
-    timer = millis() + 100 + (stateToggle ? 50 : 0);
+    timer = millis() + 50 + (stateToggle ? 100 : 0);
   }
   if(stateToggle)
   {
@@ -101,32 +101,56 @@ void isStuck()
   
   if(timer <= millis())
   {
-    if ((previousLeftPulses + 1) > pulsesLeft)
+    Serial.println("Attempting unstuck");
+    Serial.print("pulsesLeft: ");
+    Serial.println(pulsesLeft);
+    Serial.print("pulsesRight: ");
+    Serial.println(pulsesRight);
+    Serial.print("previousLeftPulses: ");
+    Serial.println(previousLeftPulses);
+    Serial.print("previousRightPulses: ");
+    Serial.println(previousRightPulses);
+    Serial.print("amountOfFailedLeftPulses: ");
+    Serial.println(amountOfFailedLeftPulses);
+    Serial.print("amountOfFailedRightPulses: ");
+    Serial.println(amountOfFailedRightPulses);
+    if ((previousLeftPulses + 1) < pulsesLeft)
     {
       amountOfFailedLeftPulses = 0;
       previousLeftPulses = pulsesLeft;
     }
-    if ((previousRightPulses + 1) > pulsesRight)
+    else
+    {
+      amountOfFailedLeftPulses++;
+    }
+    if ((previousRightPulses + 1) < pulsesRight)
     {
       amountOfFailedRightPulses = 0;
       previousRightPulses = pulsesRight;
     }
-    timer = millis() + 100;
-    if (amountOfFailedLeftPulses >= 6 && amountOfFailedRightPulses >= 6)
+    else
     {
+      amountOfFailedRightPulses++;
+    }
+    timer = millis() + 100;
+    if (amountOfFailedLeftPulses >= 10 && amountOfFailedRightPulses >= 10)
+    {
+      Serial.println("Running unstuck both");
       isCurrentlyStuck = stuckBoth;
     } 
-    else if (amountOfFailedLeftPulses >= 6)
+    else if (amountOfFailedLeftPulses >= 10)
     {
+      Serial.println("Running unstuck left");
       isCurrentlyStuck = stuckLeft;
     }
-    else if (amountOfFailedRightPulses >= 6)
+    else if (amountOfFailedRightPulses >= 10)
     {
+      Serial.println("Running unstuck right");
       isCurrentlyStuck = stuckRight;
     }
     else
     {
-      isCurrentlyStuck = NULL;
+      isCurrentlyStuck = notStuck;
     }
   }
 }

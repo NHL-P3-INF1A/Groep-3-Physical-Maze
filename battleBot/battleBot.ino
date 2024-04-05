@@ -44,13 +44,14 @@ const int IR_SENSORS[]          = {A3, A2, A1, A0}; // From left to right when l
 long pulsesLeft                 = 0;
 long pulsesRight                = 0;
 long stuckTimer                 = 0;
+long turnTimer                  = 0;
 
 // ==== [ Speaker pin ] =======================================================
 #define BUZZER                    13  // Speaker was A5
 
 enum Direction {forward, right, left, backwards, none};
-enum Action {drivingForward, turningLeft, turningRight, unstuck, unstuck2, unstuck3};
-enum IsStuck {stuckLeft, stuckRight, stuckBoth};
+enum Action {drivingForward, turningLeft, turningRight, turningRight2, unstuckBoth, unstuckLeft, unstuckRight};
+enum IsStuck {stuckLeft, stuckRight, stuckBoth, notStuck};
 IsStuck isCurrentlyStuck;
 Direction driveDirection;
 Action currentAction;
@@ -91,6 +92,7 @@ void setup()
   setPixelRgb(LED_RIGHT_BACK, 128, 0, 0);
   
   startup();
+  isCurrentlyStuck = notStuck;
   currentAction = drivingForward;
 }
 
@@ -98,6 +100,7 @@ void loop()
 {
 //  Play Doom soundtrack when entering the maze
   //playDoom();
+  //readIrOutput();
   gripperUpdate();
   switch(currentAction)
   {
@@ -128,32 +131,43 @@ void loop()
       driveDirection = right;
       if(!detectWall(ECHO_FORWARD, STOP_DISTANCE + 10))
       {
-        driveRight(255);
-        delay(200);
-        currentAction = drivingForward;
+        turnTimer = millis() + 150;
+        currentAction = turningRight2;
       }
       else
       {
         turnRightSlow();  
       }
       break;
-    case unstuck:
+    case turningRight2:
+      if (turnTimer > millis())
+      {
+        driveRight(255);
+      }
+      else
+      {
+        currentAction = drivingForward;
+      }
+      break;
+    case unstuckBoth:
       driveDirection = backwards;
       driveBack(255);
       if (stuckTimer < millis())
       {
-        stuckTimer = millis() + 500;
+        currentAction = drivingForward;
       }
       break;
-    case unstuck2:
+    case unstuckLeft:
       driveDirection = backwards;
       turnRightBack();
       if (stuckTimer < millis())
       {
-        stuckTimer = millis() + 500;
+        currentAction = drivingForward;
       }
-    case unstuck3:
+      break;
+    case unstuckRight:
       turnLeftBack();
+      driveDirection = backwards;
       if (stuckTimer < millis())
       {
         currentAction = drivingForward;
@@ -171,8 +185,11 @@ void loop()
     case right:
       blinkLed(LED_RIGHT_FRONT);
       break;
+    case backwards:
+      setPixelByName(LED_RIGHT_BACK, WHITE);
     default:
       blinkLed(100);
+      setPixelByName(LED_RIGHT_BACK, RED);
       break;
   }
 
@@ -180,22 +197,26 @@ void loop()
   {
     detectFinish();
   }
+  isStuck();
   switch (isCurrentlyStuck)
   {
     case stuckBoth:
-      currentAction = unstuck;
+      isCurrentlyStuck = notStuck;
+      currentAction = unstuckBoth;
       stuckTimer = millis() + 500;
       break;
     case stuckLeft:
-      currentAction = unstuck2;
+      isCurrentlyStuck = notStuck;
+      currentAction = unstuckLeft;
       stuckTimer = millis() + 500;
       break;
     case stuckRight:
-      currentAction = unstuck3;
+      isCurrentlyStuck = notStuck;
       stuckTimer = millis() + 500;
       break;
+    case notStuck:
     default:
-      currentAction = drivingForward;
+      isCurrentlyStuck = notStuck;
       break;
   }
 }
@@ -234,6 +255,7 @@ void startup()
      }
      while(!detectedPion)
      {
+        Serial.println("Waiting for start signal");
         if (!detectWall(ECHO_FORWARD, 30))
         {
           amountOfPulses = 0;
@@ -282,6 +304,7 @@ void startup()
         long timer = millis() + 1500;
         while(timer > millis())
         {
+          Serial.println("Staying on line");
           stayOnLine(200);
         }
         driveForward(200);
@@ -296,6 +319,7 @@ void detectFinish()
 {
   if(isAnythingBlack())
   {
+    Serial.println("Running Finish");
     while(isOnLightColor())
     {
       stayOnLine(255);
